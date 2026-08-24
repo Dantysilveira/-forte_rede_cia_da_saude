@@ -189,13 +189,6 @@
             color: #666;
         }
 
-        .product-price {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--verde-principal);
-            margin-top: 4px;
-        }
-
         /* Controles de Quantidade */
         .qty-control {
             display: flex;
@@ -265,12 +258,7 @@
         }
 
         .cart-summary {
-            font-size: 0.85rem;
-        }
-
-        .cart-summary strong {
-            display: block;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--verde-escuro);
         }
 
@@ -409,7 +397,7 @@
     <div class="cart-bar">
         <div class="cart-summary">
             Itens no pedido: <b id="cartCount">0</b>
-            <strong id="cartTotalText">Total: R$ 0,00</strong>
+            <strong id="cartTotalText"></strong>
         </div>
         <button class="btn-whatsapp" onclick="askToFinalize()">
             <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Finalizar Pedido
@@ -424,13 +412,13 @@
     </div>
 
     <script>
-        // Lista de Produtos com Preços (price_per_unit / price_per_100g)
+        // Lista de Produtos com Preços mantidos em segundo plano para o WhatsApp
         const products = [
             { 
                 id: 1, 
                 name: "Castanha do Pará", 
                 type: "granel", 
-                price: 12.00, // Preço por 100g
+                price: 12.00, 
                 img: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=200&q=80", 
                 desc: "A granel (a partir de 100g)" 
             },
@@ -438,7 +426,7 @@
                 id: 2, 
                 name: "Aveia em Flocos", 
                 type: "granel", 
-                price: 2.50, // Preço por 100g
+                price: 2.50, 
                 img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=200&q=80", 
                 desc: "A granel (a partir de 100g)" 
             },
@@ -446,7 +434,7 @@
                 id: 3, 
                 name: "Chia em Grãos", 
                 type: "granel", 
-                price: 4.00, // Preço por 100g
+                price: 4.00, 
                 img: "https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=200&q=80", 
                 desc: "A granel (a partir de 100g)" 
             },
@@ -454,7 +442,7 @@
                 id: 4, 
                 name: "Whey Protein Concentrado", 
                 type: "unidade", 
-                price: 98.00, // Preço unitário
+                price: 98.00, 
                 img: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=200&q=80", 
                 desc: "Embalagem fechada" 
             },
@@ -462,7 +450,7 @@
                 id: 5, 
                 name: "Creatina Monohidratada", 
                 type: "unidade", 
-                price: 85.00, // Preço unitário
+                price: 85.00, 
                 img: "https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?auto=format&fit=crop&w=200&q=80", 
                 desc: "Embalagem fechada" 
             },
@@ -470,7 +458,7 @@
                 id: 6, 
                 name: "Chá Verde Orgânico", 
                 type: "unidade", 
-                price: 15.00, // Preço unitário
+                price: 15.00, 
                 img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80", 
                 desc: "Pacote 100g" 
             }
@@ -503,7 +491,6 @@
             filtered.forEach(p => {
                 const isGranel = p.type === 'granel';
                 const currentQty = currentSelections[p.id];
-                const priceLabel = isGranel ? `${formatCurrency(p.price)} / 100g` : formatCurrency(p.price);
 
                 grid.innerHTML += `
                     <div class="product-card">
@@ -514,7 +501,6 @@
                             <div class="product-info">
                                 <h3>${p.name}</h3>
                                 <p>${p.desc}</p>
-                                <div class="product-price">${priceLabel}</div>
                             </div>
                         </div>
 
@@ -554,30 +540,29 @@
             }
         }
 
-     function addToCart(id) {
-    const product = products.find(p => p.id === id);
-    const qtyToAdd = currentSelections[id];
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const qtyToAdd = currentSelections[id];
 
-    if (cart[id]) {
-        cart[id].qty += qtyToAdd;
-    } else {
-        cart[id] = { ...product, qty: qtyToAdd };
-    }
+            if (cart[id]) {
+                cart[id].qty += qtyToAdd;
+            } else {
+                cart[id] = { ...product, qty: qtyToAdd };
+            }
 
-    updateCartSummary();
+            updateCartSummary();
 
-    // 1. Reseta o valor selecionado de volta para o padrão (100g ou 1 un)
-    const defaultQty = product.type === 'granel' ? 100 : 1;
-    currentSelections[id] = defaultQty;
+            const defaultQty = product.type === 'granel' ? 100 : 1;
+            currentSelections[id] = defaultQty;
 
-    // 2. Atualiza a tela exibindo a quantidade inicial zerada/padrão
-    const qtyElement = document.getElementById(`qty-display-${id}`);
-    if (qtyElement) {
-        qtyElement.innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
-    }
+            const qtyElement = document.getElementById(`qty-display-${id}`);
+            if (qtyElement) {
+                qtyElement.innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
+            }
 
-    alert(`${product.name} (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'}) adicionado ao pedido!`);
-}
+            alert(`${product.name} (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'}) adicionado ao pedido!`);
+        }
+
         function calculateTotal() {
             let total = 0;
             Object.values(cart).forEach(item => {
@@ -592,10 +577,8 @@
 
         function updateCartSummary() {
             let totalItems = Object.keys(cart).length;
-            let totalPrice = calculateTotal();
-
             document.getElementById('cartCount').innerText = totalItems;
-            document.getElementById('cartTotalText').innerText = `Total: ${formatCurrency(totalPrice)}`;
+            document.getElementById('cartTotalText').innerText = '';
         }
 
         function filterCategory(cat, element) {
@@ -612,13 +595,11 @@
 
             const modal = document.getElementById('confirmModal');
             const content = document.getElementById('modalContent');
-            const total = calculateTotal();
 
             content.innerHTML = `
                 <div class="modal-icon"><i class="fa-solid fa-circle-question"></i></div>
                 <h3>Podemos finalizar a sua compra?</h3>
-                <p>Valor total estimado: <b>${formatCurrency(total)}</b></p>
-                <p>Ao clicar em "Sim", você será redirecionado para o WhatsApp da nossa loja para combinar a entrega.</p>
+                <p>Ao clicar em "Sim", você será redirecionado para o WhatsApp da nossa loja para conferir o resumo do pedido e combinar a entrega.</p>
                 <div class="modal-buttons">
                     <button class="btn-modal btn-yes" onclick="handleFinalizeChoice(true)">Sim, finalizar!</button>
                     <button class="btn-modal btn-no" onclick="handleFinalizeChoice(false)">Não agora</button>
