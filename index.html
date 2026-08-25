@@ -725,24 +725,29 @@
 
             filtered.forEach(p => {
                 const isGranel = p.type === 'granel';
+                const isEsgotado = p.status === 'esgotado';
+                
                 if (!currentSelections[p.id]) {
                     currentSelections[p.id] = isGranel ? 100 : 1;
                 }
                 const currentQty = currentSelections[p.id];
 
                 grid.innerHTML += `
-                    <div class="product-card" onclick="event.stopPropagation()">
+                    <div class="product-card" onclick="event.stopPropagation()" style="${isEsgotado ? 'opacity: 0.7;' : ''}">
                         <div class="product-header">
                             <div class="product-img">
                                 <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/100?text=Produto'">
                             </div>
                             <div class="product-info">
-                                <h3>${p.name}</h3>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <h3>${p.name}</h3>
+                                    ${isEsgotado ? '<span style="background: #ffebee; color: #e53935; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Esgotado</span>' : ''}
+                                </div>
                                 <p>${p.desc}</p>
                             </div>
                         </div>
 
-                        <div class="qty-control">
+                        <div class="qty-control" style="${isEsgotado ? 'pointer-events: none; opacity: 0.5;' : ''}">
                             <span>${isGranel ? 'Quantidade (g):' : 'Unidades:'}</span>
                             <div class="qty-btn-group">
                                 <button class="btn-qty" onclick="changeQty(${p.id}, -1)">-</button>
@@ -753,9 +758,15 @@
                             </div>
                         </div>
 
-                        <button class="btn-add" onclick="addToCart(${p.id})">
-                            <i class="fa-solid fa-cart-plus"></i> Adicionar ao Pedido
-                        </button>
+                        ${isEsgotado ? `
+                            <button class="btn-add" style="background: #ccc; cursor: not-allowed;" disabled>
+                                <i class="fa-solid fa-ban"></i> Indisponível no Momento
+                            </button>
+                        ` : `
+                            <button class="btn-add" onclick="addToCart(${p.id})">
+                                <i class="fa-solid fa-cart-plus"></i> Adicionar ao Pedido
+                            </button>
+                        `}
                     </div>
                 `;
             });

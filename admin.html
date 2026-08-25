@@ -4,82 +4,189 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - +Forte</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --verde-escuro: #1b4d2e;
-            --verde-principal: #2e7d32;
-            --fundo: #f4f6f4;
+            --verde-escuro: #0f381e;
+            --verde-principal: #1f6b3a;
+            --verde-suave: #2d8a4e;
+            --verde-claro: #eaf5ee;
+            --fundo: #f8faf9;
+            --card-fundo: #ffffff;
+            --texto-primario: #1a231e;
+            --texto-secundario: #5a6e62;
+            --borda-suave: #e2e9e4;
+            --sombra-card: 0 10px 30px -5px rgba(15, 56, 30, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
             --vermelho: #e53935;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background: var(--fundo); padding: 20px; max-width: 600px; margin: 0 auto; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--fundo);
+            color: var(--texto-primario);
+            padding: 24px 20px 60px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
         header {
-            background: var(--verde-escuro);
+            background: linear-gradient(160deg, #0b2c17 0%, #154a28 100%);
             color: white;
-            padding: 16px;
-            border-radius: 12px;
+            padding: 28px 20px;
+            border-radius: 20px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(11, 44, 23, 0.12);
+        }
+
+        header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 300;
         }
 
         .login-box, .admin-panel {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: var(--card-fundo);
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: var(--sombra-card);
+            border: 1px solid var(--borda-suave);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--verde-escuro);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
-        label { font-size: 0.85rem; font-weight: bold; color: #444; }
+        label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--texto-secundario);
+        }
 
         input, select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.95rem;
+            padding: 12px;
+            border: 1px solid var(--borda-suave);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            outline: none;
+            background: #fdfdfd;
+            color: var(--texto-primario);
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--verde-suave);
         }
 
         .btn {
             background: var(--verde-principal);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: bold;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: 600;
             cursor: pointer;
             width: 100%;
-            margin-top: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
         }
 
-        .btn-danger { background: var(--vermelho); }
+        .btn:hover {
+            background: var(--verde-escuro);
+        }
+
+        .btn-danger {
+            background: #fff5f5;
+            color: var(--vermelho);
+            border: 1px solid #ffe0e0;
+        }
+
+        .btn-danger:hover {
+            background: #ffe8e8;
+        }
 
         .item-card {
-            background: #fafafa;
-            border: 1px solid #e0e0e0;
-            padding: 14px;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            background: var(--card-fundo);
+            border: 1px solid var(--borda-suave);
+            padding: 18px;
+            border-radius: 16px;
+            margin-bottom: 16px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         .item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--borda-suave);
         }
 
-        .item-title { font-weight: bold; color: var(--verde-escuro); }
+        .item-title {
+            font-weight: 700;
+            color: var(--verde-escuro);
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .status-disponivel {
+            background: var(--verde-claro);
+            color: var(--verde-principal);
+        }
+
+        .status-esgotado {
+            background: #ffebee;
+            color: var(--vermelho);
+        }
 
         .hidden { display: none !important; }
     </style>
@@ -87,27 +194,30 @@
 <body>
 
     <header>
-        <h2><i class="fa-solid fa-gear"></i> Painel de Gerenciamento</h2>
-        <p>Altere preços e produtos de forma simples</p>
+        <h2><i class="fa-solid fa-sliders"></i> Painel de Controle</h2>
+        <p>Gerencie os produtos do cardápio digital</p>
     </header>
 
     <!-- TELA DE LOGIN -->
     <div id="loginSection" class="login-box">
-        <h3 style="margin-bottom: 12px;">Acesso Restrito</h3>
+        <h3 class="section-title">Acesso Restrito</h3>
         <div class="form-group">
             <label>Senha de Acesso:</label>
             <input type="password" id="passInput" placeholder="Digite a senha (padrão: 1234)">
         </div>
-        <button class="btn" onclick="checkPassword()">Entrar no Painel</button>
+        <button class="btn" onclick="checkPassword()">
+            <i class="fa-solid fa-right-to-bracket"></i> Entrar no Painel
+        </button>
     </div>
 
     <!-- PAINEL ADMINISTRATIVO -->
     <div id="adminSection" class="admin-panel hidden">
-        <h3 style="margin-bottom: 16px;">Adicionar Novo Produto</h3>
-        <div class="item-card" style="background: #e8f5e9; border-color: #a5d6a7;">
+        
+        <h3 class="section-title"><i class="fa-solid fa-square-plus"></i> Cadastrar Novo Produto</h3>
+        <div class="item-card" style="background: #f3f8f5; border-color: #d2e5d8;">
             <div class="form-group">
                 <label>Nome do Produto:</label>
-                <input type="text" id="newName" placeholder="Ex: Maca Peruana">
+                <input type="text" id="newName" placeholder="Ex: Maca Peruana 500mg">
             </div>
             <div class="form-group">
                 <label>Tipo de Venda:</label>
@@ -125,22 +235,24 @@
                 <input type="text" id="newDesc" placeholder="Ex: Suplemento em cápsulas">
             </div>
             <div class="form-group">
-                <label>Link da Imagem (URL):</label>
-                <input type="text" id="newImg" placeholder="https://...">
+                <label>Caminho da Imagem:</label>
+                <input type="text" id="newImg" placeholder="img/produto.jpeg ou link https://">
             </div>
-            <button class="btn" onclick="addNewProduct()"><i class="fa-solid fa-plus"></i> Cadastrar Produto</button>
+            <button class="btn" onclick="addNewProduct()">
+                <i class="fa-solid fa-plus"></i> Cadastrar Produto
+            </button>
         </div>
 
-        <h3 style="margin: 20px 0 12px;">Editar Produtos Existentes</h3>
+        <h3 class="section-title" style="margin-top: 28px;"><i class="fa-solid fa-boxes-stacked"></i> Editar Produtos Existentes</h3>
         <div id="adminProductList"></div>
 
-        <a href="index.html" class="btn" style="background: #555; text-align: center; text-decoration: none; display: block; margin-top: 20px;">
-            <i class="fa-solid fa-arrow-left"></i> Voltar para o Site do Cliente
+        <a href="index.html" class="btn" style="background: #4a5a50; margin-top: 24px;">
+            <i class="fa-solid fa-arrow-left"></i> Voltar para o Cardápio do Cliente
         </a>
     </div>
 
     <script>
-        const PASSWORD_CORRETA = "1234"; // Mude sua senha aqui se desejar
+        const PASSWORD_CORRETA = "1234";
 
         const defaultProducts = [
             {
@@ -148,22 +260,25 @@
                 name: "Castanha do Pará Extra",
                 type: "granel",
                 price: 12.00,
-                img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80",
+                status: "disponivel",
+                img: "img/castanhadopara.jpeg",
                 desc: "Rica em selênio e gorduras boas (A granel - a partir de 100g)"
             },
             {
                 id: 2,
                 name: "Whey Protein Concentrado 900g",
                 type: "unidade",
-                price: 98.00,
-                img: "https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?auto=format&fit=crop&w=200&q=80",
+                price: 120.00,
+                status: "disponivel",
+                img: "img/wheyconcentrado.jpeg",
                 desc: "Suplementação proteica de alta qualidade"
             },
             {
                 id: 3,
                 name: "Chá Verde Orgânico",
                 type: "granel",
-                price: 6.50,
+                price: 8.50,
+                status: "disponivel",
                 img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80",
                 desc: "Antioxidante e termogênico natural (A granel - a partir de 100g)"
             },
@@ -171,19 +286,25 @@
                 id: 4,
                 name: "Creatina Monohidratada 300g",
                 type: "unidade",
-                price: 85.00,
-                img: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=200&q=80",
+                price: 95.00,
+                status: "disponivel",
+                img: "img/252-0831-001_zoom1.jpeg",
                 desc: "Aumento de força e resistência muscular"
             }
         ];
 
         function getProducts() {
-            const stored = localStorage.getItem('site_products');
-            return stored ? JSON.parse(stored) : defaultProducts;
+            const stored = localStorage.getItem('site_products_v3');
+            if (stored) {
+                return JSON.parse(stored);
+            } else {
+                localStorage.setItem('site_products_v3', JSON.stringify(defaultProducts));
+                return defaultProducts;
+            }
         }
 
         function saveProducts(prods) {
-            localStorage.setItem('site_products', JSON.stringify(prods));
+            localStorage.setItem('site_products_v3', JSON.stringify(prods));
         }
 
         function checkPassword() {
@@ -203,29 +324,47 @@
             list.innerHTML = '';
 
             products.forEach(p => {
+                const isEsgotado = p.status === 'esgotado';
                 list.innerHTML += `
                     <div class="item-card">
                         <div class="item-header">
                             <span class="item-title">#${p.id} ${p.name}</span>
-                            <button class="btn btn-danger" style="width: auto; padding: 6px 10px;" onclick="deleteProduct(${p.id})">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                            <span class="status-badge ${isEsgotado ? 'status-esgotado' : 'status-disponivel'}">
+                                ${isEsgotado ? 'Esgotado' : 'Disponível'}
+                            </span>
                         </div>
+
+                        <div class="form-group">
+                            <label>Disponibilidade:</label>
+                            <select id="status-${p.id}">
+                                <option value="disponivel" ${!isEsgotado ? 'selected' : ''}>Em Estoque (Disponível)</option>
+                                <option value="esgotado" ${isEsgotado ? 'selected' : ''}>Esgotado / Indisponível</option>
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label>Nome:</label>
                             <input type="text" id="name-${p.id}" value="${p.name}">
                         </div>
+
                         <div class="form-group">
                             <label>Preço (R$):</label>
                             <input type="number" step="0.01" id="price-${p.id}" value="${p.price}">
                         </div>
+
                         <div class="form-group">
                             <label>Descrição:</label>
                             <input type="text" id="desc-${p.id}" value="${p.desc}">
                         </div>
-                        <button class="btn" style="background: var(--verde-escuro);" onclick="saveSingleProduct(${p.id})">
-                            <i class="fa-solid fa-floppy-disk"></i> Salvar Alterações
-                        </button>
+
+                        <div style="display: flex; gap: 8px; margin-top: 4px;">
+                            <button class="btn" style="flex: 1; background: var(--verde-escuro);" onclick="saveSingleProduct(${p.id})">
+                                <i class="fa-solid fa-floppy-disk"></i> Salvar
+                            </button>
+                            <button class="btn btn-danger" style="width: 48px;" onclick="deleteProduct(${p.id})" title="Excluir Produto">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             });
@@ -238,6 +377,8 @@
                 products[index].name = document.getElementById(`name-${id}`).value;
                 products[index].price = parseFloat(document.getElementById(`price-${id}`).value);
                 products[index].desc = document.getElementById(`desc-${id}`).value;
+                products[index].status = document.getElementById(`status-${id}`).value;
+
                 saveProducts(products);
                 alert("Produto atualizado com sucesso!");
                 renderAdminList();
@@ -249,7 +390,7 @@
             const price = parseFloat(document.getElementById('newPrice').value);
             const type = document.getElementById('newType').value;
             const desc = document.getElementById('newDesc').value;
-            const img = document.getElementById('newImg').value || "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80";
+            const img = document.getElementById('newImg').value || "img/perfil.jpeg";
 
             if (!name || isNaN(price)) {
                 alert("Preencha ao menos o Nome e o Preço do produto!");
@@ -259,7 +400,7 @@
             let products = getProducts();
             const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
 
-            products.push({ id: newId, name, price, type, desc, img });
+            products.push({ id: newId, name, price, type, desc, img, status: "disponivel" });
             saveProducts(products);
 
             document.getElementById('newName').value = '';
