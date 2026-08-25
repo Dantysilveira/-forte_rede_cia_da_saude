@@ -590,6 +590,30 @@
 
         .btn-yes { background: #25d366; color: var(--verde-escuro); }
         .btn-yes:hover { background: #20bd5a; }
+        
+        /* AJUSTES PARA TELAS GRANDES (DESKTOP) */
+        @media (min-width: 768px) {
+            /* Expande o container dos produtos e cria o grid de 2 colunas */
+            .container {
+                max-width: 960px;
+            }
+
+            .products-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            /* Ajusta os botões superiores e categorias para acompanharem a largura no PC */
+            .quick-actions, .categories {
+                max-width: 960px;
+            }
+
+            /* Centraliza e limita a barra do carrinho no PC para não esticar demais */
+            .cart-bar {
+                max-width: 600px;
+            }
+        }
     </style>
 </head>
 <body>
