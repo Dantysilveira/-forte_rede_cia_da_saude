@@ -11,6 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --verde-escuro: #0f381e;
@@ -677,100 +680,106 @@
             }
         ];
 
-        function getStoredProducts() {
-            const stored = localStorage.getItem('site_products_v3');
-            if (stored) {
-                return JSON.parse(stored);
-            } else {
-                localStorage.setItem('site_products_v3', JSON.stringify(initialProducts));
-                return initialProducts;
-            }
+      // Configuração do Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyCSvYqpPZjai6azGS8nKASK4cnAwJah2So",
+    authDomain: "forte-catalogo.firebaseapp.com",
+    databaseURL: "https://forte-catalogo-default-rtdb.firebaseio.com",
+    projectId: "forte-catalogo",
+    storageBucket: "forte-catalogo.firebasestorage.app",
+    messagingSenderId: "1035353045692",
+    appId: "1:1035353045692:web:0cd960192d2172ad7aaeb9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let rawProductsData = {};
+let currentActiveCategory = null;
+let cart = {};
+let currentSelections = {};
+
+// Escuta atualizações do Firebase em tempo real
+db.ref('products').on('value', (snapshot) => {
+    rawProductsData = snapshot.val() || {};
+    loadProducts(currentActiveCategory);
+});
+
+function loadProducts(categoryFilter = null) {
+    currentActiveCategory = categoryFilter;
+    const grid = document.getElementById('productList');
+    grid.innerHTML = '';
+
+    if (!categoryFilter) {
+        grid.innerHTML = `
+            <div style="text-align: center; padding: 48px 24px; color: var(--texto-secundario); background: var(--card-fundo); border-radius: 20px; box-shadow: var(--sombra-card); border: 1px solid var(--borda-suave);" onclick="event.stopPropagation()">
+                <div style="width: 56px; height: 56px; background: var(--verde-claro); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--verde-principal); font-size: 1.4rem;">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <h3 style="color: var(--verde-escuro); margin-bottom: 8px; font-weight: 700; font-size: 1.1rem;">Seja bem-vindo(a)! 👋</h3>
+                <p style="font-size: 0.88rem; line-height: 1.5; max-width: 320px; margin: 0 auto;">Escolha uma das categorias acima para explorar nossos produtos e montar seu pedido.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const productListArray = Object.keys(rawProductsData).map(k => rawProductsData[k]);
+
+    const filtered = productListArray.filter(p => {
+        if (categoryFilter === 'graos') return p.type === 'granel';
+        if (categoryFilter === 'suplementos') return p.type === 'unidade' && !p.name.toLowerCase().includes('chá');
+        if (categoryFilter === 'chas') return p.name.toLowerCase().includes('chá');
+        return true;
+    });
+
+    filtered.forEach(p => {
+        const isGranel = p.type === 'granel';
+        const isEsgotado = p.status === 'esgotado';
+        
+        if (!currentSelections[p.id]) {
+            currentSelections[p.id] = isGranel ? 100 : 1;
         }
+        const currentQty = currentSelections[p.id];
 
-        let products = getStoredProducts();
-        let cart = {};
-        let currentSelections = {};
-
-        function initSelections() {
-            products.forEach(p => {
-                currentSelections[p.id] = p.type === 'granel' ? 100 : 1;
-            });
-        }
-        initSelections();
-
-        function loadProducts(categoryFilter = null) {
-            products = getStoredProducts();
-            const grid = document.getElementById('productList');
-            grid.innerHTML = '';
-
-            if (!categoryFilter) {
-                grid.innerHTML = `
-                    <div style="text-align: center; padding: 48px 24px; color: var(--texto-secundario); background: var(--card-fundo); border-radius: 20px; box-shadow: var(--sombra-card); border: 1px solid var(--borda-suave);" onclick="event.stopPropagation()">
-                        <div style="width: 56px; height: 56px; background: var(--verde-claro); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--verde-principal); font-size: 1.4rem;">
-                            <i class="fa-solid fa-leaf"></i>
-                        </div>
-                        <h3 style="color: var(--verde-escuro); margin-bottom: 8px; font-weight: 700; font-size: 1.1rem;">Seja bem-vindo(a)! 👋</h3>
-                        <p style="font-size: 0.88rem; line-height: 1.5; max-width: 320px; margin: 0 auto;">Escolha uma das categorias acima para explorar nossos produtos e montar seu pedido.</p>
+        grid.innerHTML += `
+            <div class="product-card" onclick="event.stopPropagation()" style="${isEsgotado ? 'opacity: 0.7;' : ''}">
+                <div class="product-header">
+                    <div class="product-img">
+                        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/100?text=Produto'">
                     </div>
-                `;
-                return;
-            }
-
-            const filtered = products.filter(p => {
-                if (categoryFilter === 'graos') return p.type === 'granel';
-                if (categoryFilter === 'suplementos') return p.type === 'unidade' && !p.name.toLowerCase().includes('chá');
-                if (categoryFilter === 'chas') return p.name.toLowerCase().includes('chá');
-                return true;
-            });
-
-            filtered.forEach(p => {
-                const isGranel = p.type === 'granel';
-                const isEsgotado = p.status === 'esgotado';
-                
-                if (!currentSelections[p.id]) {
-                    currentSelections[p.id] = isGranel ? 100 : 1;
-                }
-                const currentQty = currentSelections[p.id];
-
-                grid.innerHTML += `
-                    <div class="product-card" onclick="event.stopPropagation()" style="${isEsgotado ? 'opacity: 0.7;' : ''}">
-                        <div class="product-header">
-                            <div class="product-img">
-                                <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/100?text=Produto'">
-                            </div>
-                            <div class="product-info">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <h3>${p.name}</h3>
-                                    ${isEsgotado ? '<span style="background: #ffebee; color: #e53935; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Esgotado</span>' : ''}
-                                </div>
-                                <p>${p.desc}</p>
-                            </div>
+                    <div class="product-info">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h3>${p.name}</h3>
+                            ${isEsgotado ? '<span style="background: #ffebee; color: #e53935; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Esgotado</span>' : ''}
                         </div>
-
-                        <div class="qty-control" style="${isEsgotado ? 'pointer-events: none; opacity: 0.5;' : ''}">
-                            <span>${isGranel ? 'Quantidade (g):' : 'Unidades:'}</span>
-                            <div class="qty-btn-group">
-                                <button class="btn-qty" onclick="changeQty(${p.id}, -1)">-</button>
-                                <span class="qty-display" id="qty-display-${p.id}">
-                                    ${isGranel ? currentQty + 'g' : currentQty}
-                                </span>
-                                <button class="btn-qty" onclick="changeQty(${p.id}, 1)">+</button>
-                            </div>
-                        </div>
-
-                        ${isEsgotado ? `
-                            <button class="btn-add" style="background: #ccc; cursor: not-allowed;" disabled>
-                                <i class="fa-solid fa-ban"></i> Indisponível no Momento
-                            </button>
-                        ` : `
-                            <button class="btn-add" onclick="addToCart(${p.id})">
-                                <i class="fa-solid fa-cart-plus"></i> Adicionar ao Pedido
-                            </button>
-                        `}
+                        <p>${p.desc}</p>
                     </div>
-                `;
-            });
-        }
+                </div>
+
+                <div class="qty-control" style="${isEsgotado ? 'pointer-events: none; opacity: 0.5;' : ''}">
+                    <span>${isGranel ? 'Quantidade (g):' : 'Unidades:'}</span>
+                    <div class="qty-btn-group">
+                        <button class="btn-qty" onclick="changeQty(${p.id}, -1)">-</button>
+                        <span class="qty-display" id="qty-display-${p.id}">
+                            ${isGranel ? currentQty + 'g' : currentQty}
+                        </span>
+                        <button class="btn-qty" onclick="changeQty(${p.id}, 1)">+</button>
+                    </div>
+                </div>
+
+                ${isEsgotado ? `
+                    <button class="btn-add" style="background: #ccc; cursor: not-allowed;" disabled>
+                        <i class="fa-solid fa-ban"></i> Indisponível no Momento
+                    </button>
+                ` : `
+                    <button class="btn-add" onclick="addToCart(${p.id})">
+                        <i class="fa-solid fa-cart-plus"></i> Adicionar ao Pedido
+                    </button>
+                `}
+            </div>
+        `;
+    });
+}
 
         function changeQty(id, direction) {
             const product = products.find(p => p.id === id);

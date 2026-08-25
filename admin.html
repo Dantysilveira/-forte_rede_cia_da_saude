@@ -10,6 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Scripts do Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --verde-escuro: #0f381e;
@@ -141,10 +145,6 @@
             border: 1px solid #ffe0e0;
         }
 
-        .btn-danger:hover {
-            background: #ffe8e8;
-        }
-
         .item-card {
             background: var(--card-fundo);
             border: 1px solid var(--borda-suave);
@@ -195,7 +195,7 @@
 
     <header>
         <h2><i class="fa-solid fa-sliders"></i> Painel de Controle</h2>
-        <p>Gerencie os produtos do cardápio digital</p>
+        <p>Gerencie os produtos em tempo real</p>
     </header>
 
     <!-- TELA DE LOGIN -->
@@ -244,87 +244,69 @@
         </div>
 
         <h3 class="section-title" style="margin-top: 28px;"><i class="fa-solid fa-boxes-stacked"></i> Editar Produtos Existentes</h3>
-        <div id="adminProductList"></div>
+        <div id="adminProductList">Carregando produtos do banco de dados...</div>
 
         <a href="index.html" class="btn" style="background: #4a5a50; margin-top: 24px;">
-            <i class="fa-solid fa-arrow-left"></i> Voltar para o Cardápio do Cliente
+            <i class="fa-solid fa-arrow-left"></i> Voltar para o Cardápio
         </a>
     </div>
 
     <script>
         const PASSWORD_CORRETA = "1234";
 
-        const defaultProducts = [
-            {
-                id: 1,
-                name: "Castanha do Pará Extra",
-                type: "granel",
-                price: 12.00,
-                status: "disponivel",
-                img: "img/castanhadopara.jpeg",
-                desc: "Rica em selênio e gorduras boas (A granel - a partir de 100g)"
-            },
-            {
-                id: 2,
-                name: "Whey Protein Concentrado 900g",
-                type: "unidade",
-                price: 120.00,
-                status: "disponivel",
-                img: "img/wheyconcentrado.jpeg",
-                desc: "Suplementação proteica de alta qualidade"
-            },
-            {
-                id: 3,
-                name: "Chá Verde Orgânico",
-                type: "granel",
-                price: 8.50,
-                status: "disponivel",
-                img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80",
-                desc: "Antioxidante e termogênico natural (A granel - a partir de 100g)"
-            },
-            {
-                id: 4,
-                name: "Creatina Monohidratada 300g",
-                type: "unidade",
-                price: 95.00,
-                status: "disponivel",
-                img: "img/252-0831-001_zoom1.jpeg",
-                desc: "Aumento de força e resistência muscular"
-            }
-        ];
+        // Configuração do seu Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSvYqpPZjai6azGS8nKASK4cnAwJah2So",
+            authDomain: "forte-catalogo.firebaseapp.com",
+            databaseURL: "https://forte-catalogo-default-rtdb.firebaseio.com",
+            projectId: "forte-catalogo",
+            storageBucket: "forte-catalogo.firebasestorage.app",
+            messagingSenderId: "1035353045692",
+            appId: "1:1035353045692:web:0cd960192d2172ad7aaeb9"
+        };
 
-        function getProducts() {
-            const stored = localStorage.getItem('site_products_v3');
-            if (stored) {
-                return JSON.parse(stored);
-            } else {
-                localStorage.setItem('site_products_v3', JSON.stringify(defaultProducts));
-                return defaultProducts;
-            }
-        }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        function saveProducts(prods) {
-            localStorage.setItem('site_products_v3', JSON.stringify(prods));
-        }
+        const defaultProducts = {
+            1: { id: 1, name: "Castanha do Pará Extra", type: "granel", price: 12.00, status: "disponivel", img: "img/castanhadopara.jpeg", desc: "Rica em selênio e gorduras boas (A granel - a partir de 100g)" },
+            2: { id: 2, name: "Whey Protein Concentrado 900g", type: "unidade", price: 120.00, status: "disponivel", img: "img/wheyconcentrado.jpeg", desc: "Suplementação proteica de alta qualidade" },
+            3: { id: 3, name: "Chá Verde Orgânico", type: "granel", price: 8.50, status: "disponivel", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80", desc: "Antioxidante e termogênico natural (A granel - a partir de 100g)" },
+            4: { id: 4, name: "Creatina Monohidratada 300g", type: "unidade", price: 95.00, status: "disponivel", img: "img/252-0831-001_zoom1.jpeg", desc: "Aumento de força e resistência muscular" }
+        };
 
         function checkPassword() {
             const pass = document.getElementById('passInput').value;
             if (pass === PASSWORD_CORRETA) {
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('adminSection').classList.remove('hidden');
-                renderAdminList();
+                initAdminListener();
             } else {
                 alert("Senha incorreta!");
             }
         }
 
-        function renderAdminList() {
+        function initAdminListener() {
+            db.ref('products').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    // Se o banco estiver vazio, carrega o padrão
+                    db.ref('products').set(defaultProducts);
+                    return;
+                }
+                renderAdminList(data);
+            });
+        }
+
+        function renderAdminList(products) {
             const list = document.getElementById('adminProductList');
-            const products = getProducts();
             list.innerHTML = '';
 
-            products.forEach(p => {
+            Object.keys(products).forEach(key => {
+                const p = products[key];
+                if (!p) return;
                 const isEsgotado = p.status === 'esgotado';
+
                 list.innerHTML += `
                     <div class="item-card">
                         <div class="item-header">
@@ -371,18 +353,18 @@
         }
 
         function saveSingleProduct(id) {
-            let products = getProducts();
-            const index = products.findIndex(p => p.id === id);
-            if (index !== -1) {
-                products[index].name = document.getElementById(`name-${id}`).value;
-                products[index].price = parseFloat(document.getElementById(`price-${id}`).value);
-                products[index].desc = document.getElementById(`desc-${id}`).value;
-                products[index].status = document.getElementById(`status-${id}`).value;
+            const name = document.getElementById(`name-${id}`).value;
+            const price = parseFloat(document.getElementById(`price-${id}`).value);
+            const desc = document.getElementById(`desc-${id}`).value;
+            const status = document.getElementById(`status-${id}`).value;
 
-                saveProducts(products);
-                alert("Produto atualizado com sucesso!");
-                renderAdminList();
-            }
+            db.ref(`products/${id}`).update({
+                name, price, desc, status
+            }).then(() => {
+                alert("Produto atualizado em tempo real para todos os clientes!");
+            }).catch((err) => {
+                alert("Erro ao salvar: " + err.message);
+            });
         }
 
         function addNewProduct() {
@@ -397,27 +379,22 @@
                 return;
             }
 
-            let products = getProducts();
-            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            const newId = Date.now();
 
-            products.push({ id: newId, name, price, type, desc, img, status: "disponivel" });
-            saveProducts(products);
-
-            document.getElementById('newName').value = '';
-            document.getElementById('newPrice').value = '';
-            document.getElementById('newDesc').value = '';
-            document.getElementById('newImg').value = '';
-
-            alert("Novo produto cadastrado!");
-            renderAdminList();
+            db.ref(`products/${newId}`).set({
+                id: newId, name, price, type, desc, img, status: "disponivel"
+            }).then(() => {
+                document.getElementById('newName').value = '';
+                document.getElementById('newPrice').value = '';
+                document.getElementById('newDesc').value = '';
+                document.getElementById('newImg').value = '';
+                alert("Novo produto cadastrado!");
+            });
         }
 
         function deleteProduct(id) {
             if (confirm("Tem certeza que deseja excluir este produto?")) {
-                let products = getProducts();
-                products = products.filter(p => p.id !== id);
-                saveProducts(products);
-                renderAdminList();
+                db.ref(`products/${id}`).remove();
             }
         }
     </script>
