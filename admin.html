@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - +Forte</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --verde-escuro: #1b4d2e;
+            --verde-principal: #2e7d32;
+            --fundo: #f4f6f4;
+            --vermelho: #e53935;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background: var(--fundo); padding: 20px; max-width: 600px; margin: 0 auto; }
+
+        header {
+            background: var(--verde-escuro);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-box, .admin-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label { font-size: 0.85rem; font-weight: bold; color: #444; }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            background: var(--verde-principal);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .btn-danger { background: var(--vermelho); }
+
+        .item-card {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-title { font-weight: bold; color: var(--verde-escuro); }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2><i class="fa-solid fa-gear"></i> Painel de Gerenciamento</h2>
+        <p>Altere preços e produtos de forma simples</p>
+    </header>
+
+    <!-- TELA DE LOGIN -->
+    <div id="loginSection" class="login-box">
+        <h3 style="margin-bottom: 12px;">Acesso Restrito</h3>
+        <div class="form-group">
+            <label>Senha de Acesso:</label>
+            <input type="password" id="passInput" placeholder="Digite a senha (padrão: 1234)">
+        </div>
+        <button class="btn" onclick="checkPassword()">Entrar no Painel</button>
+    </div>
+
+    <!-- PAINEL ADMINISTRATIVO -->
+    <div id="adminSection" class="admin-panel hidden">
+        <h3 style="margin-bottom: 16px;">Adicionar Novo Produto</h3>
+        <div class="item-card" style="background: #e8f5e9; border-color: #a5d6a7;">
+            <div class="form-group">
+                <label>Nome do Produto:</label>
+                <input type="text" id="newName" placeholder="Ex: Maca Peruana">
+            </div>
+            <div class="form-group">
+                <label>Tipo de Venda:</label>
+                <select id="newType">
+                    <option value="unidade">Por Unidade / Embalagem</option>
+                    <option value="granel">A Granel (Preço por 100g)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Preço (R$):</label>
+                <input type="number" step="0.01" id="newPrice" placeholder="Ex: 25.00">
+            </div>
+            <div class="form-group">
+                <label>Descrição:</label>
+                <input type="text" id="newDesc" placeholder="Ex: Suplemento em cápsulas">
+            </div>
+            <div class="form-group">
+                <label>Link da Imagem (URL):</label>
+                <input type="text" id="newImg" placeholder="https://...">
+            </div>
+            <button class="btn" onclick="addNewProduct()"><i class="fa-solid fa-plus"></i> Cadastrar Produto</button>
+        </div>
+
+        <h3 style="margin: 20px 0 12px;">Editar Produtos Existentes</h3>
+        <div id="adminProductList"></div>
+
+        <a href="index.html" class="btn" style="background: #555; text-align: center; text-decoration: none; display: block; margin-top: 20px;">
+            <i class="fa-solid fa-arrow-left"></i> Voltar para o Site do Cliente
+        </a>
+    </div>
+
+    <script>
+        const PASSWORD_CORRETA = "1234"; // Mude sua senha aqui se desejar
+
+        const defaultProducts = [
+            {
+                id: 1,
+                name: "Castanha do Pará Extra",
+                type: "granel",
+                price: 12.00,
+                img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80",
+                desc: "Rica em selênio e gorduras boas (A granel - a partir de 100g)"
+            },
+            {
+                id: 2,
+                name: "Whey Protein Concentrado 900g",
+                type: "unidade",
+                price: 98.00,
+                img: "https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?auto=format&fit=crop&w=200&q=80",
+                desc: "Suplementação proteica de alta qualidade"
+            },
+            {
+                id: 3,
+                name: "Chá Verde Orgânico",
+                type: "granel",
+                price: 6.50,
+                img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80",
+                desc: "Antioxidante e termogênico natural (A granel - a partir de 100g)"
+            },
+            {
+                id: 4,
+                name: "Creatina Monohidratada 300g",
+                type: "unidade",
+                price: 85.00,
+                img: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=200&q=80",
+                desc: "Aumento de força e resistência muscular"
+            }
+        ];
+
+        function getProducts() {
+            const stored = localStorage.getItem('site_products');
+            return stored ? JSON.parse(stored) : defaultProducts;
+        }
+
+        function saveProducts(prods) {
+            localStorage.setItem('site_products', JSON.stringify(prods));
+        }
+
+        function checkPassword() {
+            const pass = document.getElementById('passInput').value;
+            if (pass === PASSWORD_CORRETA) {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('adminSection').classList.remove('hidden');
+                renderAdminList();
+            } else {
+                alert("Senha incorreta!");
+            }
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('adminProductList');
+            const products = getProducts();
+            list.innerHTML = '';
+
+            products.forEach(p => {
+                list.innerHTML += `
+                    <div class="item-card">
+                        <div class="item-header">
+                            <span class="item-title">#${p.id} ${p.name}</span>
+                            <button class="btn btn-danger" style="width: auto; padding: 6px 10px;" onclick="deleteProduct(${p.id})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label>Nome:</label>
+                            <input type="text" id="name-${p.id}" value="${p.name}">
+                        </div>
+                        <div class="form-group">
+                            <label>Preço (R$):</label>
+                            <input type="number" step="0.01" id="price-${p.id}" value="${p.price}">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição:</label>
+                            <input type="text" id="desc-${p.id}" value="${p.desc}">
+                        </div>
+                        <button class="btn" style="background: var(--verde-escuro);" onclick="saveSingleProduct(${p.id})">
+                            <i class="fa-solid fa-floppy-disk"></i> Salvar Alterações
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function saveSingleProduct(id) {
+            let products = getProducts();
+            const index = products.findIndex(p => p.id === id);
+            if (index !== -1) {
+                products[index].name = document.getElementById(`name-${id}`).value;
+                products[index].price = parseFloat(document.getElementById(`price-${id}`).value);
+                products[index].desc = document.getElementById(`desc-${id}`).value;
+                saveProducts(products);
+                alert("Produto atualizado com sucesso!");
+                renderAdminList();
+            }
+        }
+
+        function addNewProduct() {
+            const name = document.getElementById('newName').value;
+            const price = parseFloat(document.getElementById('newPrice').value);
+            const type = document.getElementById('newType').value;
+            const desc = document.getElementById('newDesc').value;
+            const img = document.getElementById('newImg').value || "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80";
+
+            if (!name || isNaN(price)) {
+                alert("Preencha ao menos o Nome e o Preço do produto!");
+                return;
+            }
+
+            let products = getProducts();
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+
+            products.push({ id: newId, name, price, type, desc, img });
+            saveProducts(products);
+
+            document.getElementById('newName').value = '';
+            document.getElementById('newPrice').value = '';
+            document.getElementById('newDesc').value = '';
+            document.getElementById('newImg').value = '';
+
+            alert("Novo produto cadastrado!");
+            renderAdminList();
+        }
+
+        function deleteProduct(id) {
+            if (confirm("Tem certeza que deseja excluir este produto?")) {
+                let products = getProducts();
+                products = products.filter(p => p.id !== id);
+                saveProducts(products);
+                renderAdminList();
+            }
+        }
+    </script>
+</body>
+</html>

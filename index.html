@@ -4,16 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>+Forte - Cia da Saúde</title>
-    <!-- Ícones via FontAwesome -->
+    
+    <!-- Fonte Inter & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --verde-escuro: #1b4d2e;
-            --verde-principal: #2e7d32;
-            --verde-claro: #e8f5e9;
-            --fundo: #f4f6f4;
-            --texto: #2c3e50;
-            --sombra: 0 4px 15px rgba(0,0,0,0.08);
+            --verde-escuro: #0f381e;
+            --verde-principal: #1f6b3a;
+            --verde-suave: #2d8a4e;
+            --verde-claro: #eaf5ee;
+            --fundo: #f8faf9;
+            --card-fundo: #ffffff;
+            --texto-primario: #1a231e;
+            --texto-secundario: #5a6e62;
+            --borda-suave: #e2e9e4;
+            --sombra-card: 0 10px 30px -5px rgba(15, 56, 30, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            --sombra-hover: 0 20px 35px -10px rgba(15, 56, 30, 0.12);
             --vermelho: #e53935;
         }
 
@@ -21,38 +31,58 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
             background-color: var(--fundo);
-            color: var(--texto);
-            padding-bottom: 90px;
+            color: var(--texto-primario);
+            padding-bottom: 110px;
+            min-height: 100vh;
         }
 
-        /* Cabeçalho */
+        /* HEADER DESIGN ELEGANTE */
         header {
-            background-color: var(--verde-escuro);
+            background: linear-gradient(160deg, #0b2c17 0%, #154a28 100%);
             color: white;
-            padding: 24px 16px;
+            padding: 48px 20px 40px;
             text-align: center;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            box-shadow: var(--sombra);
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            box-shadow: 0 12px 32px rgba(11, 44, 23, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 60%);
+            pointer-events: none;
         }
 
         .logo-placeholder {
-            width: 90px;
-            height: 90px;
+            width: 96px;
+            height: 96px;
             background-color: white;
             border-radius: 50%;
-            margin: 0 auto 12px;
+            margin: 0 auto 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 3px solid #81c784;
+            border: 4px solid rgba(255, 255, 255, 0.2);
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-placeholder:hover {
+            transform: scale(1.03);
         }
 
         .logo-placeholder img {
@@ -61,116 +91,162 @@
             object-fit: cover;
         }
 
-        header h1 {
-            font-size: 1.4rem;
-            margin-bottom: 4px;
+        .brand-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .main-title {
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #ffffff;
+        }
+
+        .sub-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #8be3a2;
+            margin-top: 4px;
         }
 
         header p {
-            font-size: 0.9rem;
-            opacity: 0.9;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
             font-weight: 300;
         }
 
-        /* Atalhos Rápidos */
+        /* BOTOES DE ACAO RAPIDA */
         .quick-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 16px;
-            max-width: 500px;
-            margin: 0 auto;
+            gap: 14px;
+            padding: 0 20px;
+            max-width: 560px;
+            margin: -22px auto 28px;
+            position: relative;
+            z-index: 10;
         }
 
         .btn-action {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            background: white;
-            padding: 12px;
-            border-radius: 12px;
+            gap: 10px;
+            background: var(--card-fundo);
+            padding: 14px 18px;
+            border-radius: 16px;
             text-decoration: none;
-            color: var(--verde-escuro);
+            color: var(--texto-primario);
             font-weight: 600;
             font-size: 0.9rem;
-            box-shadow: var(--sombra);
-            border: 1px solid #e0e0e0;
+            box-shadow: var(--sombra-card);
+            border: 1px solid var(--borda-suave);
+            transition: all 0.25s ease;
         }
 
-        /* Categorias */
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-hover);
+            border-color: #cbd8d0;
+        }
+
+        /* CATEGORIAS MINIMALISTAS */
         .categories {
             display: flex;
-            gap: 8px;
-            padding: 0 16px;
-            overflow-x: auto;
-            max-width: 500px;
-            margin: 10px auto;
-            scrollbar-width: none;
-        }
-
-        .categories::-webkit-scrollbar {
-            display: none;
+            justify-content: center;
+            gap: 10px;
+            padding: 0 20px;
+            flex-wrap: wrap;
+            max-width: 600px;
+            margin: 0 auto 32px;
         }
 
         .chip {
-            background: white;
-            border: 1px solid #ccc;
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: var(--card-fundo);
+            border: 1px solid var(--borda-suave);
+            padding: 10px 22px;
+            border-radius: 30px;
             white-space: nowrap;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--texto-secundario);
             cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .chip:hover {
+            border-color: var(--verde-suave);
+            color: var(--verde-principal);
+            transform: translateY(-1px);
         }
 
         .chip.active {
             background: var(--verde-principal);
             color: white;
             border-color: var(--verde-principal);
+            font-weight: 600;
+            box-shadow: 0 6px 16px rgba(31, 107, 58, 0.3);
         }
 
-        /* Vitrine de Produtos */
+        /* CONTAINER PRINCIPAL */
         .container {
-            max-width: 500px;
+            max-width: 560px;
             margin: 0 auto;
-            padding: 16px;
+            padding: 0 20px;
         }
 
         .section-title {
-            font-size: 1.1rem;
-            margin-bottom: 12px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 16px;
             color: var(--verde-escuro);
+            letter-spacing: -0.2px;
         }
 
         .products-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            padding: 14px;
-            box-shadow: var(--sombra);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 16px;
+        }
+
+        /* CARDS DOS PRODUTOS */
+        .product-card {
+            background: var(--card-fundo);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: var(--sombra-card);
+            border: 1px solid var(--borda-suave);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            box-shadow: var(--sombra-hover);
+            border-color: #d0ded5;
         }
 
         .product-header {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
 
         .product-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
+            width: 72px;
+            height: 72px;
+            border-radius: 14px;
             overflow: hidden;
             flex-shrink: 0;
             background-color: var(--verde-claro);
+            border: 1px solid #e1ebe4;
         }
 
         .product-img img {
@@ -180,150 +256,318 @@
         }
 
         .product-info h3 {
-            font-size: 1rem;
-            color: var(--texto);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--texto-primario);
+            margin-bottom: 4px;
         }
 
         .product-info p {
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 0.82rem;
+            color: var(--texto-secundario);
+            line-height: 1.35;
         }
 
-        /* Controles de Quantidade */
+        /* CONTROLES DE QUANTIDADE */
         .qty-control {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #eee;
+            background: #f4f7f5;
+            padding: 8px 14px;
+            border-radius: 12px;
+            border: 1px solid #e8eee9;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--texto-secundario);
         }
 
         .qty-btn-group {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .btn-qty {
             background: white;
-            border: 1px solid #ccc;
+            border: 1px solid var(--borda-suave);
             width: 32px;
             height: 32px;
-            border-radius: 6px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-weight: 600;
             font-size: 1.1rem;
             color: var(--verde-escuro);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .btn-qty:hover {
+            background: var(--verde-claro);
+            border-color: var(--verde-suave);
+            color: var(--verde-principal);
         }
 
         .qty-display {
-            font-weight: bold;
+            font-weight: 700;
             font-size: 0.95rem;
-            min-width: 60px;
+            min-width: 55px;
             text-align: center;
+            color: var(--texto-primario);
         }
 
         .btn-add {
             background: var(--verde-principal);
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 13px;
+            border-radius: 12px;
             font-weight: 600;
             width: 100%;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(31, 107, 58, 0.2);
         }
 
-        /* Barra de Checkout Fixo no Rodapé */
+        .btn-add:hover {
+            background: var(--verde-escuro);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(15, 56, 30, 0.3);
+        }
+
+        /* BARRA INFERIOR FLUTUANTE (CARRINHO) */
         .cart-bar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 12px 16px;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(15, 56, 30, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 500px;
+            max-width: 520px;
             margin: 0 auto;
             z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .cart-summary {
-            font-size: 0.9rem;
+            font-size: 0.92rem;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cart-badge {
+            background: #25d366;
             color: var(--verde-escuro);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
         }
 
         .btn-whatsapp {
             background: #25d366;
-            color: white;
+            color: var(--verde-escuro);
             border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
             font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
 
-        /* Modal / Caixa de Diálogo de Confirmação */
+        .btn-whatsapp:hover {
+            background: #20bd5a;
+            transform: scale(1.02);
+        }
+
+        /* MODAL DESIGN MODERNO */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(15, 30, 20, 0.6);
+            backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 20px;
             z-index: 1000;
         }
 
         .modal-card {
             background: white;
-            border-radius: 16px;
+            border-radius: 24px;
             padding: 24px;
-            max-width: 400px;
+            max-width: 480px;
             width: 100%;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s ease-out;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            animation: modalIn 0.25s cubic-bezier(0, 0, 0.2, 1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .modal-icon {
-            font-size: 2.5rem;
-            color: var(--verde-principal);
-            margin-bottom: 12px;
-        }
-
-        .modal-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            color: var(--verde-escuro);
-        }
-
-        .modal-card p {
-            font-size: 0.95rem;
-            color: #555;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
-            line-height: 1.4;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--borda-suave);
+        }
+
+        .modal-header h3 {
+            color: var(--verde-escuro);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .btn-close-modal {
+            background: #f4f7f5;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1rem;
+            color: var(--texto-secundario);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .btn-close-modal:hover {
+            background: #e2e8e4;
+        }
+
+        .cart-items-list {
+            overflow-y: auto;
+            max-height: 48vh;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-right: 4px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8faf9;
+            border-radius: 14px;
+            border: 1px solid var(--borda-suave);
+        }
+
+        .cart-item-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .cart-item-info img {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .cart-item-details h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--texto-primario);
+        }
+
+        .cart-item-details span {
+            font-size: 0.82rem;
+            color: var(--verde-principal);
+            font-weight: 700;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-remove-item {
+            background: none;
+            border: none;
+            color: var(--vermelho);
+            cursor: pointer;
+            padding: 6px;
+            font-size: 0.95rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .btn-remove-item:hover {
+            opacity: 1;
+        }
+
+        .cart-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--borda-suave);
+        }
+
+        .btn-clear-cart {
+            background: #fff5f5;
+            color: var(--vermelho);
+            border: 1px solid #ffe0e0;
+            padding: 11px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-clear-cart:hover {
+            background: #ffe8e8;
         }
 
         .modal-buttons {
@@ -333,54 +577,42 @@
 
         .btn-modal {
             flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
             border: none;
             cursor: pointer;
             font-size: 0.95rem;
         }
 
-        .btn-yes {
-            background: var(--verde-principal);
-            color: white;
-        }
-
-        .btn-no {
-            background: #f0f0f0;
-            color: #555;
-        }
-
-        .btn-close {
-            background: var(--verde-principal);
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-        }
+        .btn-yes { background: #25d366; color: var(--verde-escuro); }
+        .btn-yes:hover { background: #20bd5a; }
     </style>
 </head>
-<body>
+<body onclick="resetCategoryView()">
 
     <header>
         <div class="logo-placeholder">
             <img src="img/perfil.jpeg" alt="+Forte Rede Cia da Saúde">
         </div>
-        <h1>+ forte rede Cia da Saúde</h1>
+        <h1 class="brand-title">
+            <span class="main-title">+ FORTE</span>
+            <span class="sub-title">REDE CIA DA SAÚDE</span>
+        </h1>
         <p>Cuidando da sua saúde com qualidade 💚</p>
     </header>
 
     <div class="quick-actions">
-        <a href="https://maps.google.com" target="_blank" class="btn-action">
+        <a href="https://www.google.com/maps/dir/Lauro+Muller+-+Lauro+M%C3%BCller,+SC,+88880-000/Cia+da+Sa%C3%BAde,+R.+Dr.+Valdir+Cotrim,+21+-+sala+01+CEP+89.295-115+-+Centro,+Lauro+M%C3%BCller+-+SC,+88880-000/@-28.3936244,-49.397673,17.42z/data=!4m13!4m12!1m5!1m1!1s0x9521a6f97528f5af:0x20788d1b6abebe89!2m2!1d-49.3960234!2d-28.3919751!1m5!1m1!1s0x9521a7198b8001b1:0xac13dfb4d97e156b!2m2!1d-49.3972127!2d-28.3949525?entry=ttu&g_ep=EgoyMDI2MDgxOS4wIKXMDSoASAFQAw%3D%3D" 
+        target="_blank" class="btn-action" onclick="event.stopPropagation()">
             <i class="fa-solid fa-location-dot" style="color: #e53935;"></i> Venha nos visitar
         </a>
-        <a href="https://instagram.com" target="_blank" class="btn-action">
+        <a href="https://instagram.com/ciadasaudelauromuller" target="_blank" class="btn-action" onclick="event.stopPropagation()">
             <i class="fa-brands fa-instagram" style="color: #e1306c;"></i> Instagram
         </a>
     </div>
 
-    <!-- Filtro de Categorias -->
-    <div class="categories">
-        <button class="chip active" onclick="filterCategory('todos', this)">Todos</button>
+    <div class="categories" onclick="event.stopPropagation()">
         <button class="chip" onclick="filterCategory('graos', this)">Grãos & A Granel (g)</button>
         <button class="chip" onclick="filterCategory('suplementos', this)">Suplementos</button>
         <button class="chip" onclick="filterCategory('chas', this)">Chás & Ervas</button>
@@ -389,114 +621,120 @@
     <div class="container">
         <h2 class="section-title">Monte seu Pedido</h2>
         <div class="products-grid" id="productList">
-            <!-- Produtos inseridos via JS -->
+            <!-- Produtos ou boas-vindas aqui via JS -->
         </div>
     </div>
 
-    <!-- Barra de Rodapé do Carrinho -->
-    <div class="cart-bar">
-        <div class="cart-summary">
-            Itens no pedido: <b id="cartCount">0</b>
-            <strong id="cartTotalText"></strong>
+    <!-- BARRA INFERIOR FLUTUANTE -->
+    <div class="cart-bar" onclick="event.stopPropagation()">
+        <div class="cart-summary" onclick="openCartModal()">
+            <div class="cart-badge" id="cartCount">0</div>
+            <span>Ver carrinho</span>
         </div>
-        <button class="btn-whatsapp" onclick="askToFinalize()">
-            <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Finalizar Pedido
+        <button class="btn-whatsapp" onclick="openCartModal()">
+            <i class="fa-solid fa-bag-shopping"></i> Finalizar
         </button>
     </div>
 
-    <!-- Modal de Confirmação (Pergunta) -->
+    <!-- MODAL -->
     <div class="modal-overlay" id="confirmModal">
-        <div class="modal-card" id="modalContent">
-            <!-- Conteúdo dinâmico do Modal -->
-        </div>
+        <div class="modal-card" id="modalContent" onclick="event.stopPropagation()"></div>
     </div>
 
     <script>
-        // Lista de Produtos com Preços mantidos em segundo plano para o WhatsApp
-        const products = [
-            { 
-                id: 1, 
-                name: "Castanha do Pará", 
-                type: "granel", 
-                price: 12.00, 
-                img: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=200&q=80", 
-                desc: "A granel (a partir de 100g)" 
+        const initialProducts = [
+            {
+                id: 1,
+                name: "Castanha do Pará Extra",
+                type: "granel",
+                price: 12.00,
+                img: "img/castanhadopara.jpeg",
+                desc: "Rica em selênio e gorduras boas (A granel - a partir de 100g)"
             },
-            { 
-                id: 2, 
-                name: "Aveia em Flocos", 
-                type: "granel", 
-                price: 2.50, 
-                img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=200&q=80", 
-                desc: "A granel (a partir de 100g)" 
+            {
+                id: 2,
+                name: "Whey Protein Concentrado 900g",
+                type: "unidade",
+                price: 120.00,
+                img: "img/wheyconcentrado.jpeg",
+                desc: "Suplementação proteica de alta qualidade"
             },
-            { 
-                id: 3, 
-                name: "Chia em Grãos", 
-                type: "granel", 
-                price: 4.00, 
-                img: "https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=200&q=80", 
-                desc: "A granel (a partir de 100g)" 
+            {
+                id: 3,
+                name: "Chá Verde Orgânico",
+                type: "granel",
+                price: 8.50,
+                img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80",
+                desc: "Antioxidante e termogênico natural (A granel - a partir de 100g)"
             },
-            { 
-                id: 4, 
-                name: "Whey Protein Concentrado", 
-                type: "unidade", 
-                price: 98.00, 
-                img: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=200&q=80", 
-                desc: "Embalagem fechada" 
-            },
-            { 
-                id: 5, 
-                name: "Creatina Monohidratada", 
-                type: "unidade", 
-                price: 85.00, 
-                img: "https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?auto=format&fit=crop&w=200&q=80", 
-                desc: "Embalagem fechada" 
-            },
-            { 
-                id: 6, 
-                name: "Chá Verde Orgânico", 
-                type: "unidade", 
-                price: 15.00, 
-                img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80", 
-                desc: "Pacote 100g" 
+            {
+                id: 4,
+                name: "Creatina Monohidratada 300g",
+                type: "unidade",
+                price: 95.00,
+                img: "img/252-0831-001_zoom1.jpeg",
+                desc: "Aumento de força e resistência muscular"
             }
         ];
 
+        function getStoredProducts() {
+            const stored = localStorage.getItem('site_products_v3');
+            if (stored) {
+                return JSON.parse(stored);
+            } else {
+                localStorage.setItem('site_products_v3', JSON.stringify(initialProducts));
+                return initialProducts;
+            }
+        }
+
+        let products = getStoredProducts();
         let cart = {};
         let currentSelections = {};
 
-        products.forEach(p => {
-            currentSelections[p.id] = p.type === 'granel' ? 100 : 1;
-        });
-
-        function formatCurrency(val) {
-            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        function initSelections() {
+            products.forEach(p => {
+                currentSelections[p.id] = p.type === 'granel' ? 100 : 1;
+            });
         }
+        initSelections();
 
-        function loadProducts(categoryFilter = 'todos') {
+        function loadProducts(categoryFilter = null) {
+            products = getStoredProducts();
             const grid = document.getElementById('productList');
             grid.innerHTML = '';
 
-            const filtered = categoryFilter === 'todos' 
-                ? products 
-                : products.filter(p => {
-                    if(categoryFilter === 'graos') return p.type === 'granel';
-                    if(categoryFilter === 'suplementos') return p.id === 4 || p.id === 5;
-                    if(categoryFilter === 'chas') return p.id === 6;
-                    return true;
-                });
+            if (!categoryFilter) {
+                grid.innerHTML = `
+                    <div style="text-align: center; padding: 48px 24px; color: var(--texto-secundario); background: var(--card-fundo); border-radius: 20px; box-shadow: var(--sombra-card); border: 1px solid var(--borda-suave);" onclick="event.stopPropagation()">
+                        <div style="width: 56px; height: 56px; background: var(--verde-claro); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--verde-principal); font-size: 1.4rem;">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <h3 style="color: var(--verde-escuro); margin-bottom: 8px; font-weight: 700; font-size: 1.1rem;">Seja bem-vindo(a)! 👋</h3>
+                        <p style="font-size: 0.88rem; line-height: 1.5; max-width: 320px; margin: 0 auto;">Escolha uma das categorias acima para explorar nossos produtos e montar seu pedido.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const filtered = products.filter(p => {
+                if (categoryFilter === 'graos') return p.type === 'granel';
+                if (categoryFilter === 'suplementos') return p.type === 'unidade' && !p.name.toLowerCase().includes('chá');
+                if (categoryFilter === 'chas') return p.name.toLowerCase().includes('chá');
+                return true;
+            });
 
             filtered.forEach(p => {
                 const isGranel = p.type === 'granel';
+                if (!currentSelections[p.id]) {
+                    currentSelections[p.id] = isGranel ? 100 : 1;
+                }
                 const currentQty = currentSelections[p.id];
 
                 grid.innerHTML += `
-                    <div class="product-card">
+                    <div class="product-card" onclick="event.stopPropagation()">
                         <div class="product-header">
                             <div class="product-img">
-                                <img src="${p.img}" alt="${p.name}">
+                                <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/100?text=Produto'">
                             </div>
                             <div class="product-info">
                                 <h3>${p.name}</h3>
@@ -525,15 +763,16 @@
 
         function changeQty(id, direction) {
             const product = products.find(p => p.id === id);
+            if (!product) return;
             const isGranel = product.type === 'granel';
 
             if (isGranel) {
-                let newGrams = currentSelections[id] + (direction * 100);
+                let newGrams = (currentSelections[id] || 100) + (direction * 100);
                 if (newGrams < 100) newGrams = 100;
                 currentSelections[id] = newGrams;
                 document.getElementById(`qty-display-${id}`).innerText = newGrams + 'g';
             } else {
-                let newQty = currentSelections[id] + direction;
+                let newQty = (currentSelections[id] || 1) + direction;
                 if (newQty < 1) newQty = 1;
                 currentSelections[id] = newQty;
                 document.getElementById(`qty-display-${id}`).innerText = newQty;
@@ -542,90 +781,140 @@
 
         function addToCart(id) {
             const product = products.find(p => p.id === id);
-            const qtyToAdd = currentSelections[id];
+            if (!product) return;
+            const qtyToAdd = currentSelections[id] || (product.type === 'granel' ? 100 : 1);
 
-            if (cart[id]) {
-                cart[id].qty += qtyToAdd;
-            } else {
-                cart[id] = { ...product, qty: qtyToAdd };
-            }
-
+            cart[id] = { ...product, qty: qtyToAdd };
             updateCartSummary();
 
             const defaultQty = product.type === 'granel' ? 100 : 1;
             currentSelections[id] = defaultQty;
+            document.getElementById(`qty-display-${id}`).innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
 
-            const qtyElement = document.getElementById(`qty-display-${id}`);
-            if (qtyElement) {
-                qtyElement.innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
-            }
-
-            alert(`${product.name} (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'}) adicionado ao pedido!`);
-        }
-
-        function calculateTotal() {
-            let total = 0;
-            Object.values(cart).forEach(item => {
-                if (item.type === 'granel') {
-                    total += (item.qty / 100) * item.price;
-                } else {
-                    total += item.qty * item.price;
-                }
-            });
-            return total;
+            alert(`${product.name} atualizado no pedido (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'})!`);
         }
 
         function updateCartSummary() {
-            let totalItems = Object.keys(cart).length;
-            document.getElementById('cartCount').innerText = totalItems;
-            document.getElementById('cartTotalText').innerText = '';
+            let totalItemsCount = 0;
+            Object.values(cart).forEach(item => {
+                if (item.type === 'granel') {
+                    totalItemsCount += 1;
+                } else {
+                    totalItemsCount += item.qty;
+                }
+            });
+            document.getElementById('cartCount').innerText = totalItemsCount;
         }
 
         function filterCategory(cat, element) {
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            element.classList.add('active');
+            if (element) element.classList.add('active');
             loadProducts(cat);
         }
 
-        function askToFinalize() {
+        function resetCategoryView() {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            loadProducts(null);
+        }
+
+        function openCartModal() {
             if (Object.keys(cart).length === 0) {
                 alert("Seu carrinho está vazio! Selecione alguns produtos primeiro.");
                 return;
             }
-
-            const modal = document.getElementById('confirmModal');
-            const content = document.getElementById('modalContent');
-
-            content.innerHTML = `
-                <div class="modal-icon"><i class="fa-solid fa-circle-question"></i></div>
-                <h3>Podemos finalizar a sua compra?</h3>
-                <p>Ao clicar em "Sim", você será redirecionado para o WhatsApp da nossa loja para conferir o resumo do pedido e combinar a entrega.</p>
-                <div class="modal-buttons">
-                    <button class="btn-modal btn-yes" onclick="handleFinalizeChoice(true)">Sim, finalizar!</button>
-                    <button class="btn-modal btn-no" onclick="handleFinalizeChoice(false)">Não agora</button>
-                </div>
-            `;
-
-            modal.style.display = 'flex';
+            renderCartModal();
+            document.getElementById('confirmModal').style.display = 'flex';
         }
 
-        function handleFinalizeChoice(isYes) {
+        function renderCartModal() {
             const content = document.getElementById('modalContent');
+            let itemsHtml = '';
+            
+            Object.values(cart).forEach(item => {
+                const isGranel = item.type === 'granel';
+                const qtyText = isGranel ? `${item.qty}g` : `${item.qty} un`;
 
-            if (isYes) {
-                content.innerHTML = `
-                    <div class="modal-icon" style="color: #25d366;"><i class="fa-solid fa-circle-check"></i></div>
-                    <h3>Perfeito! Tudo pronto 🌿</h3>
-                    <p>Estamos te transferindo para o WhatsApp da loja para apresentar o resumo do seu pedido!</p>
-                    <button class="btn-modal btn-close" onclick="redirectToWhatsApp()">Ir para o WhatsApp <i class="fa-brands fa-whatsapp"></i></button>
+                itemsHtml += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <img src="${item.img}" alt="${item.name}">
+                            <div class="cart-item-details">
+                                <h4>${item.name}</h4>
+                                <span>${qtyText}</span>
+                            </div>
+                        </div>
+                        <div class="cart-item-actions">
+                            <button class="btn-qty" onclick="changeCartItemQty(${item.id}, -1)">-</button>
+                            <button class="btn-qty" onclick="changeCartItemQty(${item.id}, 1)">+</button>
+                            <button class="btn-remove-item" onclick="removeFromCart(${item.id})" title="Remover item">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
                 `;
+            });
+
+            content.innerHTML = `
+                <div class="modal-header">
+                    <h3>Meu Pedido</h3>
+                    <button class="btn-close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div class="cart-items-list">
+                    ${itemsHtml}
+                </div>
+
+                <div class="cart-footer">
+                    <button class="btn-clear-cart" onclick="clearCart()">
+                        <i class="fa-solid fa-trash-can"></i> Limpar todo o carrinho
+                    </button>
+                    <div class="modal-buttons" style="margin-top: 4px;">
+                        <button class="btn-modal btn-yes" onclick="redirectToWhatsApp()">
+                            Enviar pelo WhatsApp <i class="fa-brands fa-whatsapp"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function changeCartItemQty(id, direction) {
+            const item = cart[id];
+            if (!item) return;
+
+            if (item.type === 'granel') {
+                item.qty += direction * 100;
+                if (item.qty < 100) {
+                    removeFromCart(id);
+                    return;
+                }
             } else {
-                content.innerHTML = `
-                    <div class="modal-icon" style="color: #e53935;"><i class="fa-solid fa-face-sad-tear"></i></div>
-                    <h3>Que pena! 💚</h3>
-                    <p>Lamentamos que não tenha finalizado seu pedido neste momento. Se precisar de ajuda ou tiver dúvidas, estamos sempre à disposição!</p>
-                    <button class="btn-modal btn-no" style="width:100%" onclick="closeModal()">Continuar navegando</button>
-                `;
+                item.qty += direction;
+                if (item.qty < 1) {
+                    removeFromCart(id);
+                    return;
+                }
+            }
+
+            updateCartSummary();
+            renderCartModal();
+        }
+
+        function removeFromCart(id) {
+            delete cart[id];
+            updateCartSummary();
+
+            if (Object.keys(cart).length === 0) {
+                closeModal();
+            } else {
+                renderCartModal();
+            }
+        }
+
+        function clearCart() {
+            if (confirm("Tem certeza que deseja remover todos os itens do carrinho?")) {
+                cart = {};
+                updateCartSummary();
+                closeModal();
             }
         }
 
@@ -635,31 +924,30 @@
 
         function redirectToWhatsApp() {
             const phone = "5548988399195";
-            
             let message = "Olá! Gostaria de fazer o seguinte pedido:\n\n";
-            let grandTotal = 0;
+            let totalOrder = 0;
 
             Object.values(cart).forEach(item => {
-                let subtotal = 0;
+                let itemTotal = 0;
                 if (item.type === 'granel') {
-                    subtotal = (item.qty / 100) * item.price;
-                    message += `• *${item.name}*: ${item.qty}g — ${formatCurrency(subtotal)}\n`;
+                    itemTotal = (item.price || 0) * (item.qty / 100);
+                    message += `• *${item.name}*: ${item.qty}g (R$ ${itemTotal.toFixed(2).replace('.', ',')})\n`;
                 } else {
-                    subtotal = item.qty * item.price;
-                    message += `• *${item.name}*: ${item.qty} un — ${formatCurrency(subtotal)}\n`;
+                    itemTotal = (item.price || 0) * item.qty;
+                    message += `• *${item.name}*: ${item.qty} un (R$ ${itemTotal.toFixed(2).replace('.', ',')})\n`;
                 }
-                grandTotal += subtotal;
+                totalOrder += itemTotal;
             });
 
-            message += `\n*VALOR TOTAL DO PEDIDO: ${formatCurrency(grandTotal)}*\n`;
-            message += "\nAguardo a confirmação para dados de entrega e pagamento. Obrigado!";
+            message += `\n *Total estimado: R$ ${totalOrder.toFixed(2).replace('.', ',')}*\n\n`;
+            message += "Como faço para finalizar o pedido?";
 
             const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
             closeModal();
         }
 
-        loadProducts();
+        loadProducts(null);
     </script>
 </body>
 </html>
