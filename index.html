@@ -592,11 +592,11 @@
         .btn-yes:hover { background: #20bd5a; }
     </style>
 </head>
-<body onclick="resetCategoryView()">
+<body>
 
     <header>
         <div class="logo-placeholder">
-            <img src="img/perfil.jpeg" alt="+Forte Rede Cia da Saúde">
+            <img src="img/perfil.jpeg" alt="+Forte Rede Cia da Saúde" onerror="this.src='https://via.placeholder.com/96?text=Logo'">
         </div>
         <h1 class="brand-title">
             <span class="main-title">+ FORTE</span>
@@ -607,15 +607,15 @@
 
     <div class="quick-actions">
         <a href="https://www.google.com/maps/dir/Lauro+Muller+-+Lauro+M%C3%BCller,+SC,+88880-000/Cia+da+Sa%C3%BAde,+R.+Dr.+Valdir+Cotrim,+21+-+sala+01+CEP+89.295-115+-+Centro,+Lauro+M%C3%BCller+-+SC,+88880-000/@-28.3936244,-49.397673,17.42z/data=!4m13!4m12!1m5!1m1!1s0x9521a6f97528f5af:0x20788d1b6abebe89!2m2!1d-49.3960234!2d-28.3919751!1m5!1m1!1s0x9521a7198b8001b1:0xac13dfb4d97e156b!2m2!1d-49.3972127!2d-28.3949525?entry=ttu&g_ep=EgoyMDI2MDgxOS4wIKXMDSoASAFQAw%3D%3D" 
-        target="_blank" class="btn-action" onclick="event.stopPropagation()">
+        target="_blank" class="btn-action">
             <i class="fa-solid fa-location-dot" style="color: #e53935;"></i> Venha nos visitar
         </a>
-        <a href="https://instagram.com/ciadasaudelauromuller" target="_blank" class="btn-action" onclick="event.stopPropagation()">
+        <a href="https://instagram.com/ciadasaudelauromuller" target="_blank" class="btn-action">
             <i class="fa-brands fa-instagram" style="color: #e1306c;"></i> Instagram
         </a>
     </div>
 
-    <div class="categories" onclick="event.stopPropagation()">
+    <div class="categories">
         <button class="chip" onclick="filterCategory('graos', this)">Grãos & A Granel (g)</button>
         <button class="chip" onclick="filterCategory('suplementos', this)">Suplementos</button>
         <button class="chip" onclick="filterCategory('chas', this)">Chás & Ervas</button>
@@ -624,12 +624,12 @@
     <div class="container">
         <h2 class="section-title">Monte seu Pedido</h2>
         <div class="products-grid" id="productList">
-            <!-- Produtos ou boas-vindas aqui via JS -->
+            <!-- Produtos ou boas-vindas exibidos dinamicamente -->
         </div>
     </div>
 
     <!-- BARRA INFERIOR FLUTUANTE -->
-    <div class="cart-bar" onclick="event.stopPropagation()">
+    <div class="cart-bar">
         <div class="cart-summary" onclick="openCartModal()">
             <div class="cart-badge" id="cartCount">0</div>
             <span>Ver carrinho</span>
@@ -641,13 +641,13 @@
 
     <!-- MODAL -->
     <div class="modal-overlay" id="confirmModal">
-        <div class="modal-card" id="modalContent" onclick="event.stopPropagation()"></div>
+        <div class="modal-card" id="modalContent"></div>
     </div>
 
     <script>
         const initialProducts = [
             {
-                id: 1,
+                id: "1",
                 name: "Castanha do Pará Extra",
                 type: "granel",
                 price: 12.00,
@@ -655,7 +655,7 @@
                 desc: "Rica em selênio e gorduras boas (A granel - a partir de 100g)"
             },
             {
-                id: 2,
+                id: "2",
                 name: "Whey Protein Concentrado 900g",
                 type: "unidade",
                 price: 120.00,
@@ -663,7 +663,7 @@
                 desc: "Suplementação proteica de alta qualidade"
             },
             {
-                id: 3,
+                id: "3",
                 name: "Chá Verde Orgânico",
                 type: "granel",
                 price: 8.50,
@@ -671,7 +671,7 @@
                 desc: "Antioxidante e termogênico natural (A granel - a partir de 100g)"
             },
             {
-                id: 4,
+                id: "4",
                 name: "Creatina Monohidratada 300g",
                 type: "unidade",
                 price: 95.00,
@@ -680,138 +680,171 @@
             }
         ];
 
-      // Configuração do Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyCSvYqpPZjai6azGS8nKASK4cnAwJah2So",
-    authDomain: "forte-catalogo.firebaseapp.com",
-    databaseURL: "https://forte-catalogo-default-rtdb.firebaseio.com",
-    projectId: "forte-catalogo",
-    storageBucket: "forte-catalogo.firebasestorage.app",
-    messagingSenderId: "1035353045692",
-    appId: "1:1035353045692:web:0cd960192d2172ad7aaeb9"
-};
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSvYqpPZjai6azGS8nKASK4cnAwJah2So",
+            authDomain: "forte-catalogo.firebaseapp.com",
+            databaseURL: "https://forte-catalogo-default-rtdb.firebaseio.com",
+            projectId: "forte-catalogo",
+            storageBucket: "forte-catalogo.firebasestorage.app",
+            messagingSenderId: "1035353045692",
+            appId: "1:1035353045692:web:0cd960192d2172ad7aaeb9"
+        };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-let rawProductsData = {};
-let currentActiveCategory = null;
-let cart = {};
-let currentSelections = {};
+        let rawProductsData = {};
+        let currentActiveCategory = null;
+        let cart = {};
+        let currentSelections = {};
 
-// Escuta atualizações do Firebase em tempo real
-db.ref('products').on('value', (snapshot) => {
-    rawProductsData = snapshot.val() || {};
-    loadProducts(currentActiveCategory);
-});
+        // Escuta atualizações do Firebase com fallback local
+        db.ref('products').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data && Object.keys(data).length > 0) {
+                rawProductsData = data;
+            } else {
+                // Fallback para os produtos locais caso o Firebase não traga dados
+                rawProductsData = {};
+                initialProducts.forEach(p => {
+                    rawProductsData[p.id] = p;
+                });
+            }
+            loadProducts(currentActiveCategory);
+        }, (error) => {
+            console.error("Erro no Firebase, usando produtos locais:", error);
+            rawProductsData = {};
+            initialProducts.forEach(p => {
+                rawProductsData[p.id] = p;
+            });
+            loadProducts(currentActiveCategory);
+        });
 
-function loadProducts(categoryFilter = null) {
-    currentActiveCategory = categoryFilter;
-    const grid = document.getElementById('productList');
-    grid.innerHTML = '';
+        function loadProducts(categoryFilter = null) {
+            currentActiveCategory = categoryFilter;
+            const grid = document.getElementById('productList');
+            grid.innerHTML = '';
 
-    if (!categoryFilter) {
-        grid.innerHTML = `
-            <div style="text-align: center; padding: 48px 24px; color: var(--texto-secundario); background: var(--card-fundo); border-radius: 20px; box-shadow: var(--sombra-card); border: 1px solid var(--borda-suave);" onclick="event.stopPropagation()">
-                <div style="width: 56px; height: 56px; background: var(--verde-claro); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--verde-principal); font-size: 1.4rem;">
-                    <i class="fa-solid fa-leaf"></i>
-                </div>
-                <h3 style="color: var(--verde-escuro); margin-bottom: 8px; font-weight: 700; font-size: 1.1rem;">Seja bem-vindo(a)! 👋</h3>
-                <p style="font-size: 0.88rem; line-height: 1.5; max-width: 320px; margin: 0 auto;">Escolha uma das categorias acima para explorar nossos produtos e montar seu pedido.</p>
-            </div>
-        `;
-        return;
-    }
-
-    const productListArray = Object.keys(rawProductsData).map(k => rawProductsData[k]);
-
-    const filtered = productListArray.filter(p => {
-        if (categoryFilter === 'graos') return p.type === 'granel';
-        if (categoryFilter === 'suplementos') return p.type === 'unidade' && !p.name.toLowerCase().includes('chá');
-        if (categoryFilter === 'chas') return p.name.toLowerCase().includes('chá');
-        return true;
-    });
-
-    filtered.forEach(p => {
-        const isGranel = p.type === 'granel';
-        const isEsgotado = p.status === 'esgotado';
-        
-        if (!currentSelections[p.id]) {
-            currentSelections[p.id] = isGranel ? 100 : 1;
-        }
-        const currentQty = currentSelections[p.id];
-
-        grid.innerHTML += `
-            <div class="product-card" onclick="event.stopPropagation()" style="${isEsgotado ? 'opacity: 0.7;' : ''}">
-                <div class="product-header">
-                    <div class="product-img">
-                        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/100?text=Produto'">
-                    </div>
-                    <div class="product-info">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <h3>${p.name}</h3>
-                            ${isEsgotado ? '<span style="background: #ffebee; color: #e53935; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Esgotado</span>' : ''}
+            if (!categoryFilter) {
+                grid.innerHTML = `
+                    <div style="text-align: center; padding: 48px 24px; color: var(--texto-secundario); background: var(--card-fundo); border-radius: 20px; box-shadow: var(--sombra-card); border: 1px solid var(--borda-suave);">
+                        <div style="width: 56px; height: 56px; background: var(--verde-claro); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--verde-principal); font-size: 1.4rem;">
+                            <i class="fa-solid fa-leaf"></i>
                         </div>
-                        <p>${p.desc}</p>
+                        <h3 style="color: var(--verde-escuro); margin-bottom: 8px; font-weight: 700; font-size: 1.1rem;">Seja bem-vindo(a)! 👋</h3>
+                        <p style="font-size: 0.88rem; line-height: 1.5; max-width: 320px; margin: 0 auto;">Escolha uma das categorias acima para explorar nossos produtos e montar seu pedido.</p>
                     </div>
-                </div>
+                `;
+                return;
+            }
 
-                <div class="qty-control" style="${isEsgotado ? 'pointer-events: none; opacity: 0.5;' : ''}">
-                    <span>${isGranel ? 'Quantidade (g):' : 'Unidades:'}</span>
-                    <div class="qty-btn-group">
-                        <button class="btn-qty" onclick="changeQty(${p.id}, -1)">-</button>
-                        <span class="qty-display" id="qty-display-${p.id}">
-                            ${isGranel ? currentQty + 'g' : currentQty}
-                        </span>
-                        <button class="btn-qty" onclick="changeQty(${p.id}, 1)">+</button>
+            const productListArray = Object.keys(rawProductsData).map(k => {
+                return { ...rawProductsData[k], keyId: k };
+            });
+
+            const filtered = productListArray.filter(p => {
+                const pName = p.name ? p.name.toLowerCase() : '';
+                if (categoryFilter === 'graos') return p.type === 'granel';
+                if (categoryFilter === 'suplementos') return p.type === 'unidade' && !pName.includes('chá');
+                if (categoryFilter === 'chas') return pName.includes('chá');
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p style="text-align:center; padding: 20px; color: var(--texto-secundario);">Nenhum produto encontrado nesta categoria.</p>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const prodId = p.keyId || p.id;
+                const isGranel = p.type === 'granel';
+                const isEsgotado = p.status === 'esgotado';
+                
+                if (!currentSelections[prodId]) {
+                    currentSelections[prodId] = isGranel ? 100 : 1;
+                }
+                const currentQty = currentSelections[prodId];
+
+                grid.innerHTML += `
+                    <div class="product-card" style="${isEsgotado ? 'opacity: 0.7;' : ''}">
+                        <div class="product-header">
+                            <div class="product-img">
+                                <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/100?text=Produto'">
+                            </div>
+                            <div class="product-info">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <h3>${p.name}</h3>
+                                    ${isEsgotado ? '<span style="background: #ffebee; color: #e53935; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Esgotado</span>' : ''}
+                                </div>
+                                <p>${p.desc || ''}</p>
+                            </div>
+                        </div>
+
+                        <div class="qty-control" style="${isEsgotado ? 'pointer-events: none; opacity: 0.5;' : ''}">
+                            <span>${isGranel ? 'Quantidade (g):' : 'Unidades:'}</span>
+                            <div class="qty-btn-group">
+                                <button class="btn-qty" onclick="changeQty('${prodId}', -1)">-</button>
+                                <span class="qty-display" id="qty-display-${prodId}">
+                                    ${isGranel ? currentQty + 'g' : currentQty}
+                                </span>
+                                <button class="btn-qty" onclick="changeQty('${prodId}', 1)">+</button>
+                            </div>
+                        </div>
+
+                        ${isEsgotado ? `
+                            <button class="btn-add" style="background: #ccc; cursor: not-allowed;" disabled>
+                                <i class="fa-solid fa-ban"></i> Indisponível no Momento
+                            </button>
+                        ` : `
+                            <button class="btn-add" onclick="addToCart('${prodId}')">
+                                <i class="fa-solid fa-cart-plus"></i> Adicionar ao Pedido
+                            </button>
+                        `}
                     </div>
-                </div>
-
-                ${isEsgotado ? `
-                    <button class="btn-add" style="background: #ccc; cursor: not-allowed;" disabled>
-                        <i class="fa-solid fa-ban"></i> Indisponível no Momento
-                    </button>
-                ` : `
-                    <button class="btn-add" onclick="addToCart(${p.id})">
-                        <i class="fa-solid fa-cart-plus"></i> Adicionar ao Pedido
-                    </button>
-                `}
-            </div>
-        `;
-    });
-}
+                `;
+            });
+        }
 
         function changeQty(id, direction) {
-            const product = products.find(p => p.id === id);
+            const product = rawProductsData[id] || Object.values(rawProductsData).find(p => p.id == id);
             if (!product) return;
+
             const isGranel = product.type === 'granel';
 
             if (isGranel) {
                 let newGrams = (currentSelections[id] || 100) + (direction * 100);
                 if (newGrams < 100) newGrams = 100;
                 currentSelections[id] = newGrams;
-                document.getElementById(`qty-display-${id}`).innerText = newGrams + 'g';
+                const displayEl = document.getElementById(`qty-display-${id}`);
+                if (displayEl) displayEl.innerText = newGrams + 'g';
             } else {
                 let newQty = (currentSelections[id] || 1) + direction;
                 if (newQty < 1) newQty = 1;
                 currentSelections[id] = newQty;
-                document.getElementById(`qty-display-${id}`).innerText = newQty;
+                const displayEl = document.getElementById(`qty-display-${id}`);
+                if (displayEl) displayEl.innerText = newQty;
             }
         }
 
         function addToCart(id) {
-            const product = products.find(p => p.id === id);
+            const product = rawProductsData[id] || Object.values(rawProductsData).find(p => p.id == id);
             if (!product) return;
+
             const qtyToAdd = currentSelections[id] || (product.type === 'granel' ? 100 : 1);
 
-            cart[id] = { ...product, qty: qtyToAdd };
+            cart[id] = { ...product, id: id, qty: qtyToAdd };
             updateCartSummary();
 
             const defaultQty = product.type === 'granel' ? 100 : 1;
             currentSelections[id] = defaultQty;
-            document.getElementById(`qty-display-${id}`).innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
+            
+            const displayEl = document.getElementById(`qty-display-${id}`);
+            if (displayEl) {
+                displayEl.innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
+            }
 
-            alert(`${product.name} atualizado no pedido (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'})!`);
+            alert(`${product.name} adicionado ao pedido (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'})!`);
         }
 
         function updateCartSummary() {
@@ -830,11 +863,6 @@ function loadProducts(categoryFilter = null) {
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             if (element) element.classList.add('active');
             loadProducts(cat);
-        }
-
-        function resetCategoryView() {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            loadProducts(null);
         }
 
         function openCartModal() {
@@ -857,16 +885,16 @@ function loadProducts(categoryFilter = null) {
                 itemsHtml += `
                     <div class="cart-item">
                         <div class="cart-item-info">
-                            <img src="${item.img}" alt="${item.name}">
+                            <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/44?text=Item'">
                             <div class="cart-item-details">
                                 <h4>${item.name}</h4>
                                 <span>${qtyText}</span>
                             </div>
                         </div>
                         <div class="cart-item-actions">
-                            <button class="btn-qty" onclick="changeCartItemQty(${item.id}, -1)">-</button>
-                            <button class="btn-qty" onclick="changeCartItemQty(${item.id}, 1)">+</button>
-                            <button class="btn-remove-item" onclick="removeFromCart(${item.id})" title="Remover item">
+                            <button class="btn-qty" onclick="changeCartItemQty('${item.id}', -1)">-</button>
+                            <button class="btn-qty" onclick="changeCartItemQty('${item.id}', 1)">+</button>
+                            <button class="btn-remove-item" onclick="removeFromCart('${item.id}')" title="Remover item">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
@@ -959,15 +987,13 @@ function loadProducts(categoryFilter = null) {
                 totalOrder += itemTotal;
             });
 
-            message += `\n *Total estimado: R$ ${totalOrder.toFixed(2).replace('.', ',')}*\n\n`;
-            message += "Como faço para finalizar o pedido?";
+            if (totalOrder > 0) {
+                message += `\n*Total Estimado*: R$ ${totalOrder.toFixed(2).replace('.', ',')}`;
+            }
 
-            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
-            closeModal();
         }
-
-        loadProducts(null);
     </script>
 </body>
 </html>
