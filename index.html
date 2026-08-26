@@ -850,7 +850,7 @@
                 const isEsgotado = p.status === 'esgotado';
                 
                 if (!currentSelections[prodId]) {
-                    currentSelections[prodId] = isGranel ? 100 : 1;
+                    currentSelections[prodId] = isGranel ? 100 : 0;
                 }
                 const currentQty = currentSelections[prodId];
 
@@ -895,45 +895,56 @@
         }
 
         function changeQty(id, direction) {
-            const product = rawProductsData[id] || Object.values(rawProductsData).find(p => p.id == id);
-            if (!product) return;
+    const product = rawProductsData[id] || Object.values(rawProductsData).find(p => p.id == id);
+    if (!product) return;
 
-            const isGranel = product.type === 'granel';
+    const isGranel = product.type === 'granel';
 
-            if (isGranel) {
-                let newGrams = (currentSelections[id] || 100) + (direction * 100);
-                if (newGrams < 100) newGrams = 100;
-                currentSelections[id] = newGrams;
-                const displayEl = document.getElementById(`qty-display-${id}`);
-                if (displayEl) displayEl.innerText = newGrams + 'g';
-            } else {
-                let newQty = (currentSelections[id] || 1) + direction;
-                if (newQty < 1) newQty = 1;
-                currentSelections[id] = newQty;
-                const displayEl = document.getElementById(`qty-display-${id}`);
-                if (displayEl) displayEl.innerText = newQty;
-            }
-        }
+    if (isGranel) {
+        // Granel: pula de 100 em 100g (ou 50 se preferir), mínimo de 100g
+        let step = 100; 
+        let newGrams = (currentSelections[id] || 100) + (direction * step);
+        if (newGrams < 100) newGrams = 100;
+        currentSelections[id] = newGrams;
+        
+        const displayEl = document.getElementById(`qty-display-${id}`);
+        if (displayEl) displayEl.innerText = newGrams + 'g';
+    } else {
+        // Unidade: começa em 0, mínimo de 0. Clicar em + vai para 1.
+        let newQty = (currentSelections[id] || 0) + direction;
+        if (newQty < 0) newQty = 0;
+        currentSelections[id] = newQty;
+        
+        const displayEl = document.getElementById(`qty-display-${id}`);
+        if (displayEl) displayEl.innerText = newQty;
+    }
+}
 
         function addToCart(id) {
-            const product = rawProductsData[id] || Object.values(rawProductsData).find(p => p.id == id);
-            if (!product) return;
+    const product = rawProductsData[id] || Object.values(rawProductsData).find(p => p.id == id);
+    if (!product) return;
 
-            const qtyToAdd = currentSelections[id] || (product.type === 'granel' ? 100 : 1);
+    const qtyToAdd = currentSelections[id] !== undefined ? currentSelections[id] : (product.type === 'granel' ? 100 : 0);
 
-            cart[id] = { ...product, id: id, qty: qtyToAdd };
-            updateCartSummary();
+    if (qtyToAdd <= 0) {
+        alert("Por favor, selecione uma quantidade maior que zero.");
+        return;
+    }
 
-            const defaultQty = product.type === 'granel' ? 100 : 1;
-            currentSelections[id] = defaultQty;
-            
-            const displayEl = document.getElementById(`qty-display-${id}`);
-            if (displayEl) {
-                displayEl.innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
-            }
+    cart[id] = { ...product, id: id, qty: qtyToAdd };
+    updateCartSummary();
 
-            alert(`${product.name} adicionado ao pedido (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'})!`);
-        }
+    // Reseta para o padrão após adicionar (0 para unidade, 100 para granel)
+    const defaultQty = product.type === 'granel' ? 100 : 0;
+    currentSelections[id] = defaultQty;
+    
+    const displayEl = document.getElementById(`qty-display-${id}`);
+    if (displayEl) {
+        displayEl.innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
+    }
+
+    alert(`${product.name} adicionado ao pedido (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'})!`);
+}
 
         function updateCartSummary() {
             let totalItemsCount = 0;
