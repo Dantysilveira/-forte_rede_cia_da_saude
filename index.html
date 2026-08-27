@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>+Forte - Cia da Saúde</title>
     
+    <link rel="stylesheet" href="style.css">
     <!-- Fonte Inter & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,648 +14,7 @@
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-    <style>
-        :root {
-            --verde-escuro: #0f381e;
-            --verde-principal: #1f6b3a;
-            --verde-suave: #2d8a4e;
-            --verde-claro: #eaf5ee;
-            --fundo: #f8faf9;
-            --card-fundo: #ffffff;
-            --texto-primario: #1a231e;
-            --texto-secundario: #5a6e62;
-            --borda-suave: #e2e9e4;
-            --sombra-card: 0 10px 30px -5px rgba(15, 56, 30, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
-            --sombra-hover: 0 20px 35px -10px rgba(15, 56, 30, 0.12);
-            --vermelho: #e53935;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        body {
-            background-color: var(--fundo);
-            color: var(--texto-primario);
-            padding-bottom: 110px;
-            min-height: 100vh;
-        }
-
-        /* HEADER COM FUNDO DE FOLHAS */
-        .header {
-            background:linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), 
-                url('img/fundo.jpeg') center/cover no-repeat !important;
-            background-position: center !important;
-            background-size: cover !important;
-            color: white;
-            padding: 50px 20px 70px 20px;
-            text-align: center;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .menu-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            transition: transform 0.2s ease;
-        }
-
-        .menu-icon:hover { transform: scale(1.05); }
-
-        .brand-title {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            line-height: 1.1;
-        }
-
-        .main-title {
-            font-size: 2.3rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            color: #ffffff;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        .sub-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: #8be3a2;
-            margin-top: 6px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 300;
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7) !important;
-        }
-
-        /* AÇÕES RÁPIDAS */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            padding: 0 20px;
-            max-width: 560px;
-            margin: -24px auto 28px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .btn-action {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: var(--card-fundo);
-            padding: 14px 18px;
-            border-radius: 16px;
-            text-decoration: none;
-            color: var(--texto-primario);
-            font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: var(--sombra-card);
-            border: 1px solid var(--borda-suave);
-            transition: all 0.25s ease;
-        }
-
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--sombra-hover);
-        }
-
-        /* CATEGORIAS EM CÍRCULO */
-        .categories-section {
-            max-width: 560px;
-            margin: 0 auto 32px;
-            padding: 0 20px;
-        }
-
-        .categories-section .section-title {
-            margin-bottom: 20px;
-        }
-
-        .categories-grid {
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-            gap: 16px;
-        }
-
-        .category-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 100px;
-            text-align: center;
-            transition: transform 0.25s ease;
-        }
-
-        .category-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .category-icon-box {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
-            border: 2px solid transparent;
-            transition: all 0.25s ease;
-            margin-bottom: 10px;
-        }
-
-        .category-icon-box i {
-            font-size: 1.8rem;
-            color: var(--verde-principal);
-            transition: color 0.25s ease;
-        }
-
-        .category-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--texto-primario);
-            line-height: 1.25;
-        }
-
-        .category-card.active .category-icon-box {
-            background: var(--verde-principal);
-            border-color: var(--verde-escuro);
-            box-shadow: 0 10px 22px rgba(31, 107, 58, 0.35);
-        }
-
-        .category-card.active .category-icon-box i {
-            color: #ffffff;
-        }
-
-        .category-card.active .category-label {
-            color: var(--verde-escuro);
-            font-weight: 700;
-        }
-
-        /* CONTAINER PRINCIPAL */
-        .container {
-            max-width: 560px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: var(--verde-escuro);
-            letter-spacing: -0.2px;
-        }
-
-        .products-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* PRODUTOS */
-        .product-card {
-            background: var(--card-fundo);
-            border-radius: 20px;
-            padding: 18px;
-            box-shadow: var(--sombra-card);
-            border: 1px solid var(--borda-suave);
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .product-card:hover {
-            box-shadow: var(--sombra-hover);
-            border-color: #d0ded5;
-        }
-
-        .product-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .product-img {
-            width: 72px;
-            height: 72px;
-            border-radius: 14px;
-            overflow: hidden;
-            flex-shrink: 0;
-            background-color: var(--verde-claro);
-            border: 1px solid #e1ebe4;
-        }
-
-        .product-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .product-info h3 {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--texto-primario);
-            margin-bottom: 4px;
-        }
-
-        .product-info p {
-            font-size: 0.82rem;
-            color: var(--texto-secundario);
-            line-height: 1.35;
-        }
-
-        .qty-control {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f4f7f5;
-            padding: 8px 14px;
-            border-radius: 12px;
-            border: 1px solid #e8eee9;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--texto-secundario);
-        }
-
-        .qty-btn-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-qty {
-            background: white;
-            border: 1px solid var(--borda-suave);
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--verde-escuro);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .btn-qty:hover {
-            background: var(--verde-claro);
-            border-color: var(--verde-suave);
-            color: var(--verde-principal);
-        }
-
-        .qty-display {
-            font-weight: 700;
-            font-size: 0.95rem;
-            min-width: 55px;
-            text-align: center;
-            color: var(--texto-primario);
-        }
-
-        .btn-add {
-            background: var(--verde-principal);
-            color: white;
-            border: none;
-            padding: 13px;
-            border-radius: 12px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            font-size: 0.92rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(31, 107, 58, 0.2);
-        }
-
-        .btn-add:hover {
-            background: var(--verde-escuro);
-            transform: translateY(-1px);
-        }
-
-        /* BARRA DE CARRINHO */
-        .cart-bar {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: rgba(15, 56, 30, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 12px 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 520px;
-            margin: 0 auto;
-            z-index: 100;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .cart-summary {
-            font-size: 0.92rem;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .cart-badge {
-            background: #25d366;
-            color: var(--verde-escuro);
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 800;
-        }
-
-        .btn-whatsapp {
-            background: #25d366;
-            color: var(--verde-escuro);
-            border: none;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
-
-        .btn-whatsapp:hover {
-            background: #20bd5a;
-            transform: scale(1.02);
-        }
-
-        /* MODAL CARRINHO */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 30, 20, 0.6);
-            backdrop-filter: blur(4px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 1000;
-        }
-
-        .modal-card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            max-width: 480px;
-            width: 100%;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-            animation: modalIn 0.25s cubic-bezier(0, 0, 0.2, 1);
-        }
-
-        @keyframes modalIn {
-            from { opacity: 0; transform: translateY(12px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--borda-suave);
-        }
-
-        .modal-header h3 {
-            color: var(--verde-escuro);
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .btn-close-modal {
-            background: #f4f7f5;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 1rem;
-            color: var(--texto-secundario);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cart-items-list {
-            overflow-y: auto;
-            max-height: 48vh;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .cart-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            background: #f8faf9;
-            border-radius: 14px;
-            border: 1px solid var(--borda-suave);
-        }
-
-        .cart-item-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .cart-item-info img {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-
-        .cart-item-details h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--texto-primario);
-        }
-
-        .cart-item-details span {
-            font-size: 0.82rem;
-            color: var(--verde-principal);
-            font-weight: 700;
-        }
-
-        .btn-remove-item {
-            background: none;
-            border: none;
-            color: var(--vermelho);
-            cursor: pointer;
-            padding: 6px;
-            font-size: 0.95rem;
-            opacity: 0.7;
-        }
-
-        .btn-remove-item:hover { opacity: 1; }
-
-        .cart-footer {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: auto;
-            padding-top: 14px;
-            border-top: 1px solid var(--borda-suave);
-        }
-
-        .btn-clear-cart {
-            background: #fff5f5;
-            color: var(--vermelho);
-            border: 1px solid #ffe0e0;
-            padding: 11px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-modal {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        .btn-yes { background: #25d366; color: var(--verde-escuro); }
-        
-        @media (min-width: 768px) {
-            .container, .categories-section, .quick-actions { max-width: 960px; }
-            .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-            .cart-bar { max-width: 600px; }
-        }
- /* 1. Garante que o container pai aceite centralizar a mensagem */
-.products-grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-/* Banner de Boas-Vindas */
-.welcome-banner {
-    width: 100% !important;
-    max-width: 680px !important;
-    margin: 15px auto 35px auto !important;
-    padding: 40px 30px !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f4f8f5 100%) !important;
-    border-radius: 24px !important;
-    border: 1px solid #e1ebe3 !important;
-    box-shadow: 0 15px 35px -10px rgba(15, 56, 30, 0.08) !important;
-    text-align: center !important;
-    box-sizing: border-box !important;
-}
-
-.welcome-badge {
-    display: inline-block;
-    background-color: #e8f5ed;
-    color: #1b5e20;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 50px;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-}
-
-.welcome-banner h2 {
-    color: #0f381e;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0 0 10px 0;
-}
-
-.welcome-banner p {
-    color: #5a6e62;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    max-width: 520px;
-    margin: 0 auto 20px auto;
-}
-
-.welcome-features {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    padding-top: 15px;
-    border-top: 1px dashed #d0e0d4;
-}
-
-.welcome-features span {
-    font-size: 0.82rem;
-    color: #2e7d32;
-    font-weight: 600;
-    background: #ffffff;
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: 1px solid #e0ebd3;
-}
-      
-    </style>
+    
 </head>
 <body>
 
@@ -766,6 +126,38 @@
                 price: 95.00,
                 img: "img/252-0831-001_zoom1.jpeg",
                 desc: "Aumento de força e resistência muscular"
+            },
+            {
+                id: "5",
+                name: "Aveia em Flocos",
+                type: "granel",
+                price: 1.80,
+                img: "img/aveia.jpeg", 
+                desc: "Super versátil para mingaus e receitas fit (A granel - a partir de 100g)"
+            },
+            {
+                id: "6",
+                name: "Chia em Grãos",
+                type: "granel",
+                price: 4.50,
+                img: "img/chia.jpeg", 
+                desc: "Rica em ômega-3, fibras e proteínas (A granel - a partir de 100g)"
+            },
+            {
+                id: "7",
+                name: "Linhaça Dourada",
+                type: "granel",
+                price: 2.20,
+                img: "img/linhaca_dourada.jpeg", 
+                desc: "Auxilia na digestão e saúde do coração (A granel - a partir de 100g)"
+            },
+            {
+                id: "8",
+                name: "Quinoa em Grãos",
+                type: "granel",
+                price: 6.00,
+                img: "img/quinoa.jpeg", 
+                desc: "Excelente substituta para o arroz, rica em aminoácidos (A granel - a partir de 100g)"
             }
         ];
 
@@ -804,16 +196,16 @@
         });
 
         function loadProducts(categoryFilter = null) {
-            currentActiveCategory = categoryFilter;
-            const grid = document.getElementById('productList');
-            grid.innerHTML = '';
+    currentActiveCategory = categoryFilter;
+    const grid = document.getElementById('productList');
+    grid.innerHTML = '';
 
-            if (!categoryFilter) {
-               if (!categoryFilter) {
-            grid.innerHTML = `
+    if (!categoryFilter) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; width: 100%; display: flex; justify-content: center; align-items: center;">
                 <div id="welcome-message" class="welcome-banner">
-                    <div class="welcome-badge">💚 ALIMENTAÇÃO SAUDÁVEL</div>                    
-                    <h2>Que bom ter você por aqui! 👋</h2>
+                    <div class="welcome-badge">💚 ALIMENTAÇÃO SAUDÁVEL</div>
+                    <h2>Que bom ter você por aqui! 👏</h2>
                     <p>Selecione uma das categorias acima para explorar nossos produtos naturais, grãos e suplementos.</p>
                     <div class="welcome-features">
                         <span>✨ Produtos Frescos</span>
@@ -821,11 +213,10 @@
                         <span>💬 Pedido via WhatsApp</span>
                     </div>
                 </div>
-            `;
-            return;
-               }
-                return;
-            }
+            </div>
+        `;
+        return;
+    }
 
             const productListArray = Object.keys(rawProductsData).map(k => {
                 return { ...rawProductsData[k], keyId: k };
