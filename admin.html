@@ -159,6 +159,15 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .form-row input, 
+        .form-row select {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .btn-submit {
