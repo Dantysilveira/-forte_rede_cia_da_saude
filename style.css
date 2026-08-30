@@ -121,6 +121,11 @@
             border: 1px solid var(--borda-suave);
             transition: all 0.25s ease;
         }
+        .btn-action i, 
+        .btn-action svg {
+            margin: 0;
+            flex-shrink: 0;
+        }
 
         .btn-action:hover {
             transform: translateY(-2px);
