@@ -332,8 +332,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>URL ou Caminho da Imagem</label>
-                    <input type="text" id="pImg" placeholder="img/produto.jpg ou https://link.com/foto.jpg">
+                    <label>Foto do Produto</label>
+                    <input type="file" id="pImg" accept="image/*">
                 </div>
 
                 <div class="form-group">
@@ -411,42 +411,58 @@
         
         let allProductsData = {};
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const editingId = document.getElementById('editingId').value;
-            
-            const prodData = {
-                name: document.getElementById('pName').value,
-                type: document.getElementById('pType').value,
-                price: parseFloat(document.getElementById('pPrice').value),
-                img: document.getElementById('pImg').value || 'https://via.placeholder.com/100?text=Produto',
-                desc: document.getElementById('pDesc').value,
-                status: 'disponivel'
-            };
+       form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const editingId = document.getElementById('editingId').value;
+    
+    const fileInput = document.getElementById('pImg');
+    const file = fileInput.files[0];
 
-            if (editingId) {
-                const currentStatus = allProductsData[editingId] ? allProductsData[editingId].status : 'disponivel';
-                prodData.status = currentStatus;
+    const prosseguirComSalvamento = (imageUrl) => {
+        const prodData = {
+            name: document.getElementById('pName').value,
+            type: document.getElementById('pType').value,
+            price: parseFloat(document.getElementById('pPrice').value),
+            img: imageUrl || 'https://via.placeholder.com/100?text=Produto',
+            desc: document.getElementById('pDesc').value,
+            status: 'disponivel'
+        };
 
-                db.ref(`products/${editingId}`).update(prodData, (err) => {
-                    if (!err) {
-                        alert("Produto atualizado com sucesso!");
-                        resetForm();
-                    } else {
-                        alert("Erro ao atualizar: " + err.message);
-                    }
-                });
-            } else {
-                db.ref('products').push(prodData, (err) => {
-                    if (!err) {
-                        form.reset();
-                        alert("Produto cadastrado com sucesso!");
-                    } else {
-                        alert("Erro ao cadastrar: " + err.message);
-                    }
-                });
-            }
-        });
+        if (editingId) {
+            const currentStatus = allProductsData[editingId] ? allProductsData[editingId].status : 'disponivel';
+            prodData.status = currentStatus;
+
+            db.ref(`products/${editingId}`).update(prodData, (err) => {
+                if (!err) {
+                    alert("Produto atualizado com sucesso!");
+                    resetForm();
+                } else {
+                    alert("Erro ao atualizar: " + err.message);
+                }
+            });
+        } else {
+            db.ref('products').push(prodData, (err) => {
+                if (!err) {
+                    resetForm();
+                    alert("Produto cadastrado com sucesso!");
+                } else {
+                    alert("Erro ao cadastrar: " + err.message);
+                }
+            });
+        }
+    };
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            prosseguirComSalvamento(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        const existingImg = editingId && allProductsData[editingId] ? allProductsData[editingId].img : '';
+        prosseguirComSalvamento(existingImg);
+    }
+    });
 
         db.ref('products').on('value', (snapshot) => {
             allProductsData = snapshot.val() || {};
@@ -505,22 +521,24 @@
         }
 
         function prepareEdit(id) {
-            const p = allProductsData[id];
-            if (!p) return;
+        const p = allProductsData[id];
+        if (!p) return;
 
-            document.getElementById('editingId').value = id;
-            document.getElementById('pName').value = p.name;
-            document.getElementById('pType').value = p.type;
-            document.getElementById('pPrice').value = p.price;
-            document.getElementById('pImg').value = p.img;
-            document.getElementById('pDesc').value = p.desc || '';
+        document.getElementById('editingId').value = id;
+        document.getElementById('pName').value = p.name;
+        document.getElementById('pType').value = p.type;
+        document.getElementById('pPrice').value = p.price;
+        document.getElementById('pDesc').value = p.desc || '';
+        
+        // Deixa o input de arquivo limpo (se ela quiser, escolhe uma foto nova; senão, a antiga é mantida)
+        document.getElementById('pImg').value = '';
 
-            document.getElementById('formTitle').innerText = 'Editar Produto';
-            document.getElementById('btnSubmitForm').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Alterações';
-            document.getElementById('btnCancelEdit').style.display = 'block';
+        document.getElementById('formTitle').innerText = 'Editar Produto';
+        document.getElementById('btnSubmitForm').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Alterações';
+        document.getElementById('btnCancelEdit').style.display = 'block';
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
         function resetForm() {
             form.reset();
