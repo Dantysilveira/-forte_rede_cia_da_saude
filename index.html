@@ -373,6 +373,7 @@
                 return;
             }
 
+        
             let itemsHtml = '';
             Object.values(cart).forEach(item => {
                 const isGranel = item.type === 'granel';
@@ -395,24 +396,53 @@
             });
 
             content.innerHTML = `
-                <div class="modal-header">
-                    <h3>Meu Pedido</h3>
-                    <button class="btn-close-modal" onclick="closeCartModal()"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="cart-items-list">
-                    ${itemsHtml}
-                </div>
-                <div class="cart-footer">
-                    <button class="btn-clear-cart" onclick="clearCart()">
-                        <i class="fa-solid fa-trash"></i> Limpar Carrinho
-                    </button>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-modal btn-yes" onclick="sendToWhatsApp()">
-                            <i class="fa-brands fa-whatsapp"></i> Enviar Pedido
-                        </button>
-                    </div>
-                </div>
-            `;
+    <div class="modal-header">
+        <h3>Meu Pedido</h3>
+        <button class="btn-close-modal" onclick="closeCartModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cart-items-list">
+        ${itemsHtml}
+    </div>
+        <!-- Bloco de Identificação e Entrega -->
+    <div id="checkout-form" style="margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; text-align: left;">
+        <div style="margin-bottom: 8px;">
+            <label style="font-size: 0.8rem; font-weight: bold; color: #333; display: block; margin-bottom: 2px;">Seu Nome:</label>
+            <input type="text" id="clientName" placeholder="Ex: João da Silva" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem;">
+        </div>
+        
+        <div style="margin-bottom: 8px;">
+            <label style="font-size: 0.8rem; font-weight: bold; color: #333; display: block; margin-bottom: 2px;">Telefone / WhatsApp:</label>
+            <input type="text" id="clientPhone" placeholder="Ex: (48) 99999-9999" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem;">
+        </div>
+
+        <div style="margin-bottom: 8px;">
+            <label style="font-size: 0.8rem; font-weight: bold; color: #333; display: block; margin-bottom: 2px;">Forma de Recebimento:</label>
+            <select id="deliveryType" onchange="toggleAddressField()" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem; background: #fff;">
+                <option value="retirada">Retirar na Loja</option>
+                <option value="entrega">Entrega no Endereço</option>
+            </select>
+        </div>
+
+        <div id="addressContainer" style="display: none; margin-bottom: 2px;">
+            <label style="font-size: 0.8rem; font-weight: bold; color: #333; display: block; margin-bottom: 2px;">Endereço Completo (Rua, Nº, Bairro):</label>
+            <textarea id="clientAddress" placeholder="Digite sua rua, número e bairro..." style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem; height: 45px; resize: none; margin-bottom: 6px;"></textarea>
+            
+            <label style="font-size: 0.8rem; font-weight: bold; color: #333; display: block; margin-bottom: 2px;">Cidade:</label>
+            <input type="text" id="clientCity" placeholder="Ex: Criciúma" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem;">
+        </div>
+    </div>
+    </div>
+    <div class="cart-footer">
+        <button class="btn-clear-cart" onclick="clearCart()">
+            <i class="fa-solid fa-trash"></i> Limpar Carrinho
+        </button>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-modal btn-yes" onclick="sendToWhatsApp()">
+                <i class="fa-brands fa-whatsapp"></i> Enviar Pedido
+            </button>
+        </div>
+    </div>
+`;
         }
 
         function openCartModal() {
@@ -440,7 +470,46 @@
     const items = Object.values(cart);
     if (items.length === 0) return;
 
-    let text = "Olá! Gostaria de fazer o seguinte pedido:\n\n";
+    const nameInput = document.getElementById('clientName');
+    const phoneInput = document.getElementById('clientPhone');
+    const deliverySelect = document.getElementById('deliveryType');
+    const addressInput = document.getElementById('clientAddress');
+    const cityInput = document.getElementById('clientCity');
+
+    const clientName = nameInput ? nameInput.value.trim() : '';
+    const clientPhone = phoneInput ? phoneInput.value.trim() : '';
+    const deliveryType = deliverySelect ? deliverySelect.value : 'retirada';
+    const clientAddress = addressInput ? addressInput.value.trim() : '';
+    const clientCity = cityInput ? cityInput.value.trim() : '';
+
+    if (!clientName || !clientPhone) {
+        alert("Por favor, preencha seu Nome e Telefone antes de enviar o pedido!");
+        return;
+    }
+
+    if (deliveryType === 'entrega' && (!clientAddress || !clientCity)) {
+        alert("Por favor, preencha o endereço completo e a cidade para a entrega!");
+        return;
+    }
+
+    let lastOrder = localStorage.getItem('lastOrderNumber') || 0;
+    let orderNumber = parseInt(lastOrder) + 1;
+    if (orderNumber > 99) orderNumber = 1;
+    localStorage.setItem('lastOrderNumber', orderNumber);
+    const formattedOrderNum = String(orderNumber).padStart(2, '0');
+
+    let text = `*Pedido #${formattedOrderNum}*\n\n`;
+    text += `*Cliente:* ${clientName}\n`;
+    text += `*Telefone:* ${clientPhone}\n`;
+    text += `*Recebimento:* ${deliveryType === 'retirada' ? 'Retirar na Loja' : 'Entrega no Endereço'}\n`;
+    
+    if (deliveryType === 'entrega') {
+        text += `*Endereço:* ${clientAddress}\n`;
+        text += `*Cidade:* ${clientCity}\n`;
+    }
+
+    text += `\n*Itens do Pedido:*\n`;
+
     let totalGeral = 0;
 
     items.forEach(item => {
@@ -448,14 +517,9 @@
         let qtyText = '';
 
         if (item.type === 'granel') {
-            // Se o preço cadastrado é por cada 100g:
             itemTotal = (item.price * item.qty) / 100;
-            
-            // OBS: Se o seu preço cadastrado for por 1kg (1000g), troque o / 100 acima por / 1000
-            
             qtyText = `${item.qty}g`;
         } else {
-            // Unidade normal
             itemTotal = item.price * item.qty;
             qtyText = `${item.qty} un`;
         }
@@ -521,6 +585,19 @@
                 }
             });
         });
+
+        function toggleAddressField() {
+    const deliveryType = document.getElementById('deliveryType');
+    const addressContainer = document.getElementById('addressContainer');
+    
+    if (!deliveryType || !addressContainer) return;
+
+    if (deliveryType.value === 'entrega') {
+        addressContainer.style.display = 'block';
+    } else {
+        addressContainer.style.display = 'none';
+    }
+}
     </script>
 </body>
 </html>
