@@ -58,13 +58,7 @@
                 </div>
                 <span class="category-label">Suplementos</span>
             </button>
-
-            <button class="category-card" onclick="filterCategory('chas', this)">
-                <div class="category-icon-box">
-                    <i class="fa-solid fa-mug-hot"></i>
-                </div>
-                <span class="category-label">Chás &<br>Ervas</span>
-            </button>
+       
         </div>
     </section>
 
@@ -101,7 +95,7 @@
                 type: "granel",
                 price: 12.00,
                 img: "img/castanhadopara.jpeg",
-                desc: "Rica em selênio e gorduras boas (A granel - a partir de 100g)"
+                desc: "Rica em selênio e gorduras boas"
             },
             {
                 id: "2",
@@ -110,14 +104,6 @@
                 price: 120.00,
                 img: "img/wheyconcentrado.jpeg",
                 desc: "Suplementação proteica de alta qualidade"
-            },
-            {
-                id: "3",
-                name: "Chá Verde Orgânico",
-                type: "granel",
-                price: 8.50,
-                img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=200&q=80",
-                desc: "Antioxidante e termogênico natural (A granel - a partir de 100g)"
             },
             {
                 id: "4",
@@ -133,7 +119,7 @@
                 type: "granel",
                 price: 1.80,
                 img: "img/aveia.jpeg", 
-                desc: "Super versátil para mingaus e receitas fit (A granel - a partir de 100g)"
+                desc: "Super versátil para mingaus e receitas fit"
             },
             {
                 id: "6",
@@ -141,7 +127,7 @@
                 type: "granel",
                 price: 4.50,
                 img: "img/chia.jpeg", 
-                desc: "Rica em ômega-3, fibras e proteínas (A granel - a partir de 100g)"
+                desc: "Rica em ômega-3, fibras e proteínas"
             },
             {
                 id: "7",
@@ -149,7 +135,7 @@
                 type: "granel",
                 price: 2.20,
                 img: "img/linhaca_dourada.jpeg", 
-                desc: "Auxilia na digestão e saúde do coração (A granel - a partir de 100g)"
+                desc: "Auxilia na digestão e saúde do coração"
             },
             {
                 id: "8",
@@ -157,7 +143,7 @@
                 type: "granel",
                 price: 6.00,
                 img: "img/quinoa.jpeg", 
-                desc: "Excelente substituta para o arroz, rica em aminoácidos (A granel - a partir de 100g)"
+                desc: "Excelente substituta para o arroz, rica em aminoácidos"
             }
         ];
 
@@ -225,8 +211,7 @@
             const filtered = productListArray.filter(p => {
                 const pName = p.name ? p.name.toLowerCase() : '';
                 if (categoryFilter === 'graos') return p.type === 'granel';
-                if (categoryFilter === 'suplementos') return p.type === 'unidade' && !pName.includes('chá');
-                if (categoryFilter === 'chas') return pName.includes('chá');
+                if (categoryFilter === 'suplementos') return p.type === 'unidade';
                 return true;
             });
 
@@ -243,7 +228,7 @@
                 if (!currentSelections[prodId]) {
                     currentSelections[prodId] = isGranel ? 100 : 0;
                 }
-                const currentQty = currentSelections[prodId];
+                const currentQty = (currentSelections[prodId] !== undefined && currentSelections[prodId] !== 100) ? currentSelections[prodId] : 0;
 
                 grid.innerHTML += `
                     <div class="product-card" style="${isEsgotado ? 'opacity: 0.7;' : ''}">
@@ -259,18 +244,19 @@
                                 <p>${p.desc || ''}</p>
                             </div>
                         </div>
-
                         <div class="qty-control" style="${isEsgotado ? 'pointer-events: none; opacity: 0.5;' : ''}">
-                            <span>${isGranel ? 'Quantidade (g):' : 'Unidades:'}</span>
+                            <span>Quantidade:</span>
                             <div class="qty-btn-group">
                                 <button class="btn-qty" onclick="changeQty('${prodId}', -1)">-</button>
-                                <span class="qty-display" id="qty-display-${prodId}">
-                                    ${isGranel ? currentQty + 'g' : currentQty}
-                                </span>
+                               <input type="number" class="qty-input-modern" 
+                               id="qty-display-${prodId}" value="${currentSelections[prodId] && currentSelections[prodId] 
+                               !== 100 ? currentSelections[prodId] : 0}" min="0" 
+                               onchange="updateSelectionFromInput('${prodId}', this.value)" 
+                               onblur="if(this.value === '') 
+                               { this.value = 0; updateSelectionFromInput('${prodId}', 0); }">
                                 <button class="btn-qty" onclick="changeQty('${prodId}', 1)">+</button>
                             </div>
                         </div>
-
                         ${isEsgotado ? `
                             <button class="btn-add" style="background: #ccc; cursor: not-allowed;" disabled>
                                 <i class="fa-solid fa-ban"></i> Indisponível no Momento
@@ -285,29 +271,22 @@
             });
         }
 
-        function changeQty(id, direction) {
-    const product = rawProductsData[id] || Object.values(rawProductsData).find(p => p.id == id);
-    if (!product) return;
+    function changeQty(id, direction) {
+    let currentVal = currentSelections[id];
+    
+    // Se for undefined ou se ainda estiver com o resquício antigo de 100, força para 0
+    if (currentVal === undefined || currentVal === 100) {
+        currentVal = 0;
+    }
 
-    const isGranel = product.type === 'granel';
+    let newVal = currentVal + direction;
+    if (newVal < 0) newVal = 0;
 
-    if (isGranel) {
-        // Granel: pula de 100 em 100g (ou 50 se preferir), mínimo de 100g
-        let step = 100; 
-        let newGrams = (currentSelections[id] || 100) + (direction * step);
-        if (newGrams < 100) newGrams = 100;
-        currentSelections[id] = newGrams;
-        
-        const displayEl = document.getElementById(`qty-display-${id}`);
-        if (displayEl) displayEl.innerText = newGrams + 'g';
-    } else {
-        // Unidade: começa em 0, mínimo de 0. Clicar em + vai para 1.
-        let newQty = (currentSelections[id] || 0) + direction;
-        if (newQty < 0) newQty = 0;
-        currentSelections[id] = newQty;
-        
-        const displayEl = document.getElementById(`qty-display-${id}`);
-        if (displayEl) displayEl.innerText = newQty;
+    currentSelections[id] = newVal;
+
+    const inputEl = document.getElementById(`qty-display-${id}`);
+    if (inputEl) {
+        inputEl.value = newVal;
     }
 }
 
@@ -315,26 +294,29 @@
     const product = rawProductsData[id] || Object.values(rawProductsData).find(p => p.id == id);
     if (!product) return;
 
-    const qtyToAdd = currentSelections[id] !== undefined ? currentSelections[id] : (product.type === 'granel' ? 100 : 0);
+    const inputEl = document.getElementById(`qty-display-${id}`);
+    const qtyToAdd = inputEl ? parseInt(inputEl.value) : (currentSelections[id] || 0);
 
     if (qtyToAdd <= 0) {
-        alert("Por favor, selecione uma quantidade maior que zero.");
+        alert("Por favor, informe uma quantidade maior que zero.");
         return;
     }
 
     cart[id] = { ...product, id: id, qty: qtyToAdd };
     updateCartSummary();
 
-    // Reseta para o padrão após adicionar (0 para unidade, 100 para granel)
-    const defaultQty = product.type === 'granel' ? 100 : 0;
-    currentSelections[id] = defaultQty;
-    
-    const displayEl = document.getElementById(`qty-display-${id}`);
-    if (displayEl) {
-        displayEl.innerText = product.type === 'granel' ? defaultQty + 'g' : defaultQty;
+    // Reseta para 0 após adicionar ao pedido
+    currentSelections[id] = 0;
+    if (inputEl) {
+        inputEl.value = 0;
     }
 
-    alert(`${product.name} adicionado ao pedido (${product.type === 'granel' ? qtyToAdd + 'g' : qtyToAdd + ' un'})!`);
+    alert(`${product.name} adicionado ao pedido (${qtyToAdd} un)!`);
+}
+
+function updateSelectionFromInput(id, value) {
+    const num = parseInt(value);
+    currentSelections[id] = isNaN(num) || num < 0 ? 0 : num;
 }
 
         function updateCartSummary() {
@@ -510,28 +492,19 @@
 
     text += `\n*Itens do Pedido:*\n`;
 
-    let totalGeral = 0;
-
     items.forEach(item => {
-        let itemTotal = 0;
         let qtyText = '';
 
         if (item.type === 'granel') {
-            itemTotal = (item.price * item.qty) / 100;
             qtyText = `${item.qty}g`;
         } else {
-            itemTotal = item.price * item.qty;
             qtyText = `${item.qty} un`;
         }
 
-        totalGeral += itemTotal;
-
-        const itemTotalFormatted = itemTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        text += `• *${item.name}* - ${qtyText} (${itemTotalFormatted})\n`;
+        text += `• *${item.name}* - ${qtyText}\n`;
     });
 
-    const totalGeralFormatted = totalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    text += `\n*Total do Pedido:* ${totalGeralFormatted}`;
+    text += `\n_Aguardando confirmação de valores e disponibilidade._`;
 
     const phone = "5548991637362";
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;

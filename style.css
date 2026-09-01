@@ -337,8 +337,37 @@
             text-align: center;
             color: var(--texto-primario);
         }
+        /* Estilo moderno para o input de quantidade */
+        .qty-input-modern {
+            width: 55px;
+            height: 34px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
 
-        .btn-add {
+            .qty-input-modern:focus {
+            border-color: #198754;
+            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+        }
+
+            /* Remove as setinhas padrão (spinner) dos navegadores */
+            .qty-input-modern::-webkit-outer-spin-button,
+            .qty-input-modern::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+            .qty-input-modern {
+                -moz-appearance: textfield;
+        }
+
+            .btn-add {
             background: var(--verde-principal);
             color: white;
             border: none;
@@ -356,7 +385,7 @@
             box-shadow: 0 4px 12px rgba(31, 107, 58, 0.2);
         }
 
-        .btn-add:hover {
+            .btn-add:hover {
             background: var(--verde-escuro);
             transform: translateY(-1px);
         }
