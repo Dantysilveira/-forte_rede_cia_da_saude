@@ -391,12 +391,7 @@ function updateSelectionFromInput(id, value) {
             <label style="font-size: 0.8rem; font-weight: bold; color: #333; display: block; margin-bottom: 2px;">Seu Nome:</label>
             <input type="text" id="clientName" placeholder="Ex: João da Silva" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem;">
         </div>
-        
-        <div style="margin-bottom: 8px;">
-            <label style="font-size: 0.8rem; font-weight: bold; color: #333; display: block; margin-bottom: 2px;">Telefone / WhatsApp:</label>
-            <input type="text" id="clientPhone" placeholder="Ex: (48) 99999-9999" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem;">
-        </div>
-
+       
         <div style="margin-bottom: 8px;">
             <label style="font-size: 0.8rem; font-weight: bold; color: #333; display: block; margin-bottom: 2px;">Forma de Recebimento:</label>
             <select id="deliveryType" onchange="toggleAddressField()" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem; background: #fff;">
@@ -464,10 +459,10 @@ function updateSelectionFromInput(id, value) {
     const clientAddress = addressInput ? addressInput.value.trim() : '';
     const clientCity = cityInput ? cityInput.value.trim() : '';
 
-    if (!clientName || !clientPhone) {
-        alert("Por favor, preencha seu Nome e Telefone antes de enviar o pedido!");
-        return;
-    }
+    if (!clientName) {
+    alert("Por favor, preencha seu Nome antes de enviar o pedido!");
+    return;
+}
 
     if (deliveryType === 'entrega' && (!clientAddress || !clientCity)) {
         alert("Por favor, preencha o endereço completo e a cidade para a entrega!");
@@ -482,8 +477,7 @@ function updateSelectionFromInput(id, value) {
 
     let text = `*Pedido #${formattedOrderNum}*\n\n`;
     text += `*Cliente:* ${clientName}\n`;
-    text += `*Telefone:* ${clientPhone}\n`;
-    text += `*Recebimento:* ${deliveryType === 'retirada' ? 'Retirar na Loja' : 'Entrega no Endereço'}\n`;
+        text += `*Recebimento:* ${deliveryType === 'retirada' ? 'Retirar na Loja' : 'Entrega no Endereço'}\n`;
     
     if (deliveryType === 'entrega') {
         text += `*Endereço:* ${clientAddress}\n`;
