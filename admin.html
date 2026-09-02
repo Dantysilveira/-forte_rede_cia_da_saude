@@ -303,6 +303,7 @@
             <h1>Gerenciar Produtos</h1>
             <div class="header-actions">
                 <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+                <button onclick="redefinirSenha()" class="btn-back"><i class="fa-solid fa-key"></i> Redefinir Senha</button>
                 <button onclick="logoutAdmin()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
             </div>
         </div>
@@ -361,27 +362,28 @@
     </div>
 
     <script>
-        const SENHA_CORRETA = "1234";
+            // Puxa a senha salva no navegador ou usa "1234" como padrão
+        let senhaCorreta = localStorage.getItem("senhaAdmin") || "1234";
 
         // Verifica autenticação ao carregar a página
         window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('adminAuth') === 'true') {
-                liberarAcesso();
-            }
+        if (localStorage.getItem('adminAuth') === 'true') {
+            liberarAcesso();
+        }
         });
 
         function fazerLogin(e) {
-            e.preventDefault();
-            const senhaDigitada = document.getElementById('senhaInput').value;
+        e.preventDefault();
+        const senhaDigitada = document.getElementById('senhaInput').value;
 
-            if (senhaDigitada === SENHA_CORRETA) {
-                localStorage.setItem('adminAuth', 'true');
-                liberarAcesso();
-            } else {
-                alert("Senha incorreta!");
-                document.getElementById('senhaInput').value = '';
-            }
+        if (senhaDigitada === senhaCorreta) {
+            localStorage.setItem('adminAuth', 'true');
+            liberarAcesso();
+        } else {
+            alert("Senha incorreta!");
+            document.getElementById('senhaInput').value = '';
         }
+    }
 
         function liberarAcesso() {
             document.getElementById('loginOverlay').style.display = 'none';
@@ -392,6 +394,26 @@
             localStorage.removeItem('adminAuth');
             window.location.reload();
         }
+
+        // Nova função para redefinir a senha direto na tela de administração
+        function redefinirSenha() {
+            let confirmacao = prompt("Digite a senha atual:");
+    
+        if (confirmacao !== senhaCorreta) {
+            alert("Senha atual incorreta!");
+            return;
+        }
+    
+        let novaSenha = prompt("Digite a nova senha (mínimo 4 caracteres):");
+        
+        if (novaSenha && novaSenha.trim().length >= 4) {
+            senhaCorreta = novaSenha.trim();
+            localStorage.setItem("senhaAdmin", senhaCorreta);
+            alert("Senha alterada com sucesso!");
+            } else {
+                alert("A senha precisa ter pelo menos 4 caracteres.");
+            }
+    }
 
         const firebaseConfig = {
             apiKey: "AIzaSyCSvYqpPZjai6azGS8nKASK4cnAwJah2So",
