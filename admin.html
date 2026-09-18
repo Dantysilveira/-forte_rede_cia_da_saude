@@ -38,7 +38,7 @@
         body {
             background-color: var(--fundo);
             color: var(--texto-primario);
-            padding: 20px;
+            padding: 16px;
             min-height: 100vh;
         }
 
@@ -61,11 +61,12 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 16px;
         }
 
         .login-card {
             background: var(--card-fundo);
-            padding: 32px;
+            padding: 24px;
             border-radius: 24px;
             width: 100%;
             max-width: 380px;
@@ -86,36 +87,62 @@
             margin-bottom: 24px;
         }
 
+        /* AJUSTE MOBILE: Header Admin Empilhado em telas pequenas */
         .header-admin {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 16px;
             margin-bottom: 24px;
+        }
+
+        @media (min-width: 600px) {
+            .header-admin {
+                flex-direction: row;
+                align-items: center;
+            }
         }
 
         .header-admin h1 {
             color: var(--verde-escuro);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
         }
 
         .header-actions {
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+            width: 100%;
+        }
+
+        @media (min-width: 600px) {
+            .header-actions {
+                width: auto;
+            }
         }
 
         .btn-back, .btn-logout {
             background: var(--card-fundo);
             border: 1px solid var(--borda-suave);
-            padding: 10px 16px;
+            padding: 10px 14px;
             border-radius: 12px;
             text-decoration: none;
             color: var(--texto-primario);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        @media (min-width: 600px) {
+            .btn-back, .btn-logout {
+                flex: unset;
+            }
         }
 
         .btn-logout {
@@ -127,10 +154,17 @@
         .admin-card {
             background: var(--card-fundo);
             border-radius: 20px;
-            padding: 24px;
+            padding: 16px;
             box-shadow: 0 10px 30px -5px rgba(15, 56, 30, 0.05);
             border: 1px solid var(--borda-suave);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .admin-card {
+                padding: 24px;
+                margin-bottom: 30px;
+            }
         }
 
         .form-group {
@@ -153,21 +187,21 @@
             border: 1px solid var(--borda-suave);
             font-size: 0.95rem;
             outline: none;
+            width: 100%;
+            background: #fff;
         }
 
         .form-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 16px;
             width: 100%;
-            min-width: 0;
-            box-sizing: border-box;
         }
-        .form-row input, 
-        .form-row select {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
+
+        @media (min-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         .btn-submit {
@@ -193,18 +227,25 @@
             display: none;
         }
 
+        /* AJUSTE MOBILE: Itens da lista em coluna no celular e linha em telas maiores */
         .product-item-admin {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: stretch;
             gap: 12px;
             padding: 14px;
             background: var(--card-fundo);
             border-radius: 14px;
             border: 1px solid var(--borda-suave);
-            margin-bottom: 10px;
-            box-sizing: border-box;
+            margin-bottom: 12px;
+        }
+
+        @media (min-width: 600px) {
+            .product-item-admin {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
         }
 
         .product-admin-info {
@@ -218,12 +259,25 @@
             height: 48px;
             border-radius: 10px;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .admin-actions {
             display: flex;
             gap: 8px;
             align-items: center;
+            width: 100%;
+            justify-content: flex-end;
+            border-top: 1px solid var(--borda-suave);
+            padding-top: 10px;
+        }
+
+        @media (min-width: 600px) {
+            .admin-actions {
+                width: auto;
+                border-top: none;
+                padding-top: 0;
+            }
         }
 
         .btn-status {
@@ -233,27 +287,38 @@
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+
+        @media (min-width: 600px) {
+            .btn-status {
+                flex: unset;
+            }
         }
 
         .btn-status.disponivel { background: #e8f5e9; color: var(--verde-principal); }
         .btn-status.esgotado { background: #ffebee; color: var(--vermelho); }
 
+        .btn-edit, .btn-delete {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .btn-edit {
             background: #e3f2fd;
             color: var(--azul);
             border: 1px solid #bbdefb;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
         }
 
         .btn-delete {
             background: #fff5f5;
             color: var(--vermelho);
             border: 1px solid #ffe0e0;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
         }
 
         .search-box {
@@ -268,6 +333,7 @@
             border: 1px solid var(--borda-suave);
             font-size: 0.95rem;
             outline: none;
+            background: #fff;
         }
 
         .search-box i {
@@ -303,7 +369,7 @@
             <h1>Gerenciar Produtos</h1>
             <div class="header-actions">
                 <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
-                <button onclick="redefinirSenha()" class="btn-back"><i class="fa-solid fa-key"></i> Redefinir Senha</button>
+                <button onclick="redefinirSenha()" class="btn-back"><i class="fa-solid fa-key"></i> Senha</button>
                 <button onclick="logoutAdmin()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
             </div>
         </div>
@@ -325,7 +391,7 @@
                             <option value="granel">A Granel (Gramas)</option>
                             <option value="unidade">Unidade / Embalagem</option>
                         </select>
-                    </div>                  
+                    </div>             
                 </div>
 
                 <div class="form-group">
@@ -358,28 +424,26 @@
     </div>
 
     <script>
-            // Puxa a senha salva no navegador ou usa "1234" como padrão
         let senhaCorreta = localStorage.getItem("senhaAdmin") || "1234";
 
-        // Verifica autenticação ao carregar a página
         window.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem('adminAuth') === 'true') {
-            liberarAcesso();
-        }
+            if (localStorage.getItem('adminAuth') === 'true') {
+                liberarAcesso();
+            }
         });
 
         function fazerLogin(e) {
-        e.preventDefault();
-        const senhaDigitada = document.getElementById('senhaInput').value;
+            e.preventDefault();
+            const senhaDigitada = document.getElementById('senhaInput').value;
 
-        if (senhaDigitada === senhaCorreta) {
-            localStorage.setItem('adminAuth', 'true');
-            liberarAcesso();
-        } else {
-            alert("Senha incorreta!");
-            document.getElementById('senhaInput').value = '';
+            if (senhaDigitada === senhaCorreta) {
+                localStorage.setItem('adminAuth', 'true');
+                liberarAcesso();
+            } else {
+                alert("Senha incorreta!");
+                document.getElementById('senhaInput').value = '';
+            }
         }
-    }
 
         function liberarAcesso() {
             document.getElementById('loginOverlay').style.display = 'none';
@@ -391,25 +455,24 @@
             window.location.reload();
         }
 
-        // Nova função para redefinir a senha direto na tela de administração
         function redefinirSenha() {
             let confirmacao = prompt("Digite a senha atual:");
-    
-        if (confirmacao !== senhaCorreta) {
-            alert("Senha atual incorreta!");
-            return;
-        }
-    
-        let novaSenha = prompt("Digite a nova senha (mínimo 4 caracteres):");
-        
-        if (novaSenha && novaSenha.trim().length >= 4) {
-            senhaCorreta = novaSenha.trim();
-            localStorage.setItem("senhaAdmin", senhaCorreta);
-            alert("Senha alterada com sucesso!");
+            
+            if (confirmacao !== senhaCorreta) {
+                alert("Senha atual incorreta!");
+                return;
+            }
+            
+            let novaSenha = prompt("Digite a nova senha (mínimo 4 caracteres):");
+            
+            if (novaSenha && novaSenha.trim().length >= 4) {
+                senhaCorreta = novaSenha.trim();
+                localStorage.setItem("senhaAdmin", senhaCorreta);
+                alert("Senha alterada com sucesso!");
             } else {
                 alert("A senha precisa ter pelo menos 4 caracteres.");
             }
-    }
+        }
 
         const firebaseConfig = {
             apiKey: "AIzaSyCSvYqpPZjai6azGS8nKASK4cnAwJah2So",
@@ -429,71 +492,71 @@
         
         let allProductsData = {};
 
-       form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const editingId = document.getElementById('editingId').value;
-    
-    const fileInput = document.getElementById('pImg');
-    const file = fileInput.files[0];
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const editingId = document.getElementById('editingId').value;
+            
+            const fileInput = document.getElementById('pImg');
+            const file = fileInput.files[0];
 
-    const btnSubmit = document.getElementById('btnSubmitForm');
-    const textoOriginalBtn = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
-    btnSubmit.disabled = true;
+            const btnSubmit = document.getElementById('btnSubmitForm');
+            const textoOriginalBtn = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+            btnSubmit.disabled = true;
 
-    const prosseguirComSalvamento = (imageUrl) => {
-        const prodData = {
-            name: document.getElementById('pName').value,
-            type: document.getElementById('pType').value,
-            price: 0,
-            img: imageUrl || 'https://via.placeholder.com/100?text=Produto',
-            desc: document.getElementById('pDesc').value,
-            status: 'disponivel'
-        };
+            const prosseguirComSalvamento = (imageUrl) => {
+                const prodData = {
+                    name: document.getElementById('pName').value,
+                    type: document.getElementById('pType').value,
+                    price: 0,
+                    img: imageUrl || 'https://via.placeholder.com/100?text=Produto',
+                    desc: document.getElementById('pDesc').value,
+                    status: 'disponivel'
+                };
 
-        if (editingId) {
-            const currentStatus = allProductsData[editingId] ? allProductsData[editingId].status : 'disponivel';
-            prodData.status = currentStatus;
+                if (editingId) {
+                    const currentStatus = allProductsData[editingId] ? allProductsData[editingId].status : 'disponivel';
+                    prodData.status = currentStatus;
 
-            db.ref(`products/${editingId}`).update(prodData, (err) => {
-                btnSubmit.innerHTML = textoOriginalBtn;
-                btnSubmit.disabled = false;
-                if (!err) {
-                    alert("Produto atualizado com sucesso!");
-                    resetForm();
+                    db.ref(`products/${editingId}`).update(prodData, (err) => {
+                        btnSubmit.innerHTML = textoOriginalBtn;
+                        btnSubmit.disabled = false;
+                        if (!err) {
+                            alert("Produto atualizado com sucesso!");
+                            resetForm();
+                        } else {
+                            alert("Erro ao atualizar: " + err.message);
+                        }
+                    });
                 } else {
-                    alert("Erro ao atualizar: " + err.message);
+                    db.ref('products').push(prodData, (err) => {
+                        btnSubmit.innerHTML = textoOriginalBtn;
+                        btnSubmit.disabled = false;
+                        if (!err) {
+                            resetForm();
+                            alert("Produto cadastrado com sucesso!");
+                        } else {
+                            alert("Erro ao cadastrar: " + err.message);
+                        }
+                    });
                 }
-            });
-        } else {
-            db.ref('products').push(prodData, (err) => {
-                btnSubmit.innerHTML = textoOriginalBtn;
-                btnSubmit.disabled = false;
-                if (!err) {
-                    resetForm();
-                    alert("Produto cadastrado com sucesso!");
-                } else {
-                    alert("Erro ao cadastrar: " + err.message);
-                }
-            });
-        }
-        };
+            };
 
-        if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            prosseguirComSalvamento(e.target.result);
-        };
-        reader.onerror = function() {
-            btnSubmit.innerHTML = textoOriginalBtn;
-            btnSubmit.disabled = false;
-            alert("Erro ao ler o arquivo da imagem.");
-        };
-        reader.readAsDataURL(file);
-        } else {
-        const existingImg = editingId && allProductsData[editingId] ? allProductsData[editingId].img : '';
-        prosseguirComSalvamento(existingImg);
-        }
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    prosseguirComSalvamento(e.target.result);
+                };
+                reader.onerror = function() {
+                    btnSubmit.innerHTML = textoOriginalBtn;
+                    btnSubmit.disabled = false;
+                    alert("Erro ao ler o arquivo da imagem.");
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const existingImg = editingId && allProductsData[editingId] ? allProductsData[editingId].img : '';
+                prosseguirComSalvamento(existingImg);
+            }
         });
 
         db.ref('products').on('value', (snapshot) => {
@@ -505,7 +568,7 @@
             adminProductList.innerHTML = '';
 
             if (!data || Object.keys(data).length === 0) {
-                adminProductList.innerHTML = '<p style="color: var(--texto-secundario); text-align: center;">Nenhum produto cadastrado no banco.</p>';
+                adminProductList.innerHTML = '<p style="color: var(--texto-secundario); text-align: center; padding: 10px;">Nenhum produto cadastrado no banco.</p>';
                 return;
             }
 
@@ -520,7 +583,6 @@
                             <div>
                                 <h4 style="font-size: 0.95rem;">${p.name}</h4>
                                 <span style="font-size: 0.8rem; color: var(--texto-secundario);">${p.type === 'granel' ? 'A granel' : 'Unidade'}</span>
-                                
                             </div>
                         </div>
                         <div class="admin-actions">
@@ -543,6 +605,7 @@
             const term = document.getElementById('searchProduct').value.toLowerCase();
             const rows = document.querySelectorAll('.product-row');
 
+            rows.rows = rows || [];
             rows.forEach(row => {
                 const name = row.getAttribute('data-name');
                 if (name.includes(term)) {
@@ -554,23 +617,21 @@
         }
 
         function prepareEdit(id) {
-        const p = allProductsData[id];
-        if (!p) return;
+            const p = allProductsData[id];
+            if (!p) return;
 
-        document.getElementById('editingId').value = id;
-        document.getElementById('pName').value = p.name;
-        document.getElementById('pType').value = p.type;        
-        document.getElementById('pDesc').value = p.desc || '';
-        
-        // Deixa o input de arquivo limpo (se ela quiser, escolhe uma foto nova; senão, a antiga é mantida)
-        document.getElementById('pImg').value = '';
+            document.getElementById('editingId').value = id;
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pType').value = p.type;        
+            document.getElementById('pDesc').value = p.desc || '';
+            document.getElementById('pImg').value = '';
 
-        document.getElementById('formTitle').innerText = 'Editar Produto';
-        document.getElementById('btnSubmitForm').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Alterações';
-        document.getElementById('btnCancelEdit').style.display = 'block';
+            document.getElementById('formTitle').innerText = 'Editar Produto';
+            document.getElementById('btnSubmitForm').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Alterações';
+            document.getElementById('btnCancelEdit').style.display = 'block';
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function resetForm() {
             form.reset();
