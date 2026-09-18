@@ -325,11 +325,7 @@
                             <option value="granel">A Granel (Gramas)</option>
                             <option value="unidade">Unidade / Embalagem</option>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Preço (R$)</label>
-                        <input type="number" step="0.01" id="pPrice" required placeholder="0.00">
-                    </div>
+                    </div>                  
                 </div>
 
                 <div class="form-group">
@@ -449,7 +445,7 @@
         const prodData = {
             name: document.getElementById('pName').value,
             type: document.getElementById('pType').value,
-            price: parseFloat(document.getElementById('pPrice').value),
+            price: 0,
             img: imageUrl || 'https://via.placeholder.com/100?text=Produto',
             desc: document.getElementById('pDesc').value,
             status: 'disponivel'
@@ -523,7 +519,8 @@
                             <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/48?text=Item'">
                             <div>
                                 <h4 style="font-size: 0.95rem;">${p.name}</h4>
-                                <span style="font-size: 0.8rem; color: var(--texto-secundario);">${p.type === 'granel' ? 'A granel' : 'Unidade'} - R$ ${p.price.toFixed(2)}</span>
+                                <span style="font-size: 0.8rem; color: var(--texto-secundario);">${p.type === 'granel' ? 'A granel' : 'Unidade'}</span>
+                                
                             </div>
                         </div>
                         <div class="admin-actions">
@@ -562,8 +559,7 @@
 
         document.getElementById('editingId').value = id;
         document.getElementById('pName').value = p.name;
-        document.getElementById('pType').value = p.type;
-        document.getElementById('pPrice').value = p.price;
+        document.getElementById('pType').value = p.type;        
         document.getElementById('pDesc').value = p.desc || '';
         
         // Deixa o input de arquivo limpo (se ela quiser, escolhe uma foto nova; senão, a antiga é mantida)
